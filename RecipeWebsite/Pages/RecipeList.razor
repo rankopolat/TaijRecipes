@@ -2,6 +2,7 @@
 @using RecipeWebsite.Models
 @using RecipeWebsite.Services
 @inject RecipeService RecipeService
+@inject NavigationManager Navigation
 
 <PageTitle>Browse Recipes</PageTitle>
 
@@ -13,90 +14,76 @@
         </MudText>
     </div>
 
-    @* Search and Filter *@
-    <MudPaper Class="pa-4 mb-6" Elevation="1">
-        <MudGrid>
-            <MudItem xs="12" sm="6">
-                <MudTextField @bind-Value="_searchTerm"
-                              Placeholder="Search recipes..."
-                              Variant="Variant.Outlined"
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.Search"
-                              Immediate="false"
-                              OnKeyDown="HandleSearchKeyDown"
-                              Clearable="true"
-                              OnClearButtonClick="HandleClear" />
-            </MudItem>
-            <MudItem xs="12" sm="6" Class="d-flex align-center">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchRecipes"
-                           StartIcon="@Icons.Material.Filled.Search" Class="mr-2">
-                    Search
-                </MudButton>
-                @if (_selectedCategory.HasValue)
-                {
-                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="ClearFilter"
-                               StartIcon="@Icons.Material.Filled.Clear" Size="Size.Small">
-                        Clear Filter
-                    </MudButton>
-                }
-            </MudItem>
-        </MudGrid>
-
-        @* Category Chips *@
-        @if (_categories.Any())
+    @* Inline search bar *@
+    <div class="search-bar-inline mb-2">
+        <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" Style="color: #8BA888;" />
+        <input type="text" placeholder="Search recipes by name..." @bind="_searchTerm" @bind:event="oninput"
+               @onkeydown="HandleSearchKeyDown" />
+        @if (!string.IsNullOrWhiteSpace(_searchTerm))
         {
-            <MudChipSet T="int?" Class="mt-3" SelectedValue="_selectedCategory" SelectedValueChanged="OnCategorySelected">
-                @foreach (var cat in _categories)
-                {
-                    <MudChip T="int?" Value="@cat.Id"
-                             Variant="@(_selectedCategory == cat.Id ? Variant.Filled : Variant.Outlined)"
-                             Color="Color.Primary">
-                        @cat.Name
-                    </MudChip>
-                }
-            </MudChipSet>
+            <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small"
+                           OnClick="HandleClear" Style="color: #8BA888;" />
         }
-    </MudPaper>
+        <button class="search-btn" @onclick="SearchRecipes">Search</button>
+    </div>
+
+    @* Category filter chips *@
+    @if (_categories.Any())
+    {
+        <div class="category-chips">
+            @foreach (var cat in _categories)
+            {
+                <button class="category-chip @(cat.Id == _selectedCategory ? "active" : "")"
+                        @onclick="@(() => OnCategorySelected(cat.Id))">
+                    @if (!string.IsNullOrEmpty(cat.Icon))
+                    {
+                        <span>@cat.Icon</span>
+                    }
+                    @cat.Name
+                </button>
+            }
+        </div>
+    }
 
     @* Results *@
-    @if (_loading)
-    {
-        <MudGrid>
-            @for (int i = 0; i < 6; i++)
-            {
-                <MudItem xs="12" sm="6" md="4">
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" Class="rounded-lg mb-2" />
-                    <MudSkeleton Width="60%" />
-                    <MudSkeleton Width="40%" />
-                </MudItem>
-            }
-        </MudGrid>
-    }
-    else if (_recipes.Any())
-    {
-        <MudText Typo="Typo.body2" Color="Color.Tertiary" Class="mb-3">
-            @_recipes.Count recipe(s) found
-        </MudText>
-        <MudGrid>
-            @foreach (var recipe in _recipes)
-            {
-                <MudItem xs="12" sm="6" md="4">
-                    <RecipeWebsite.Components.RecipeCard Recipe="recipe" />
-                </MudItem>
-            }
-        </MudGrid>
-    }
-    else
-    {
-        <MudPaper Class="pa-8 text-center my-4" Elevation="0" Style="background: transparent;">
-            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0.75rem;">
-                <circle cx="28" cy="28" r="26" fill="#4A7C59" opacity="0.06"/>
-                <circle cx="24" cy="24" r="12" fill="none" stroke="#4A7C59" stroke-width="1.5" opacity="0.18"/>
-                <path d="M33 33 L40 40" stroke="#4A7C59" stroke-width="2" opacity="0.15" stroke-linecap="round"/>
-            </svg>
-            <MudText Typo="Typo.body1" Color="Color.Tertiary">No recipes found. Try a different search or category.</MudText>
-        </MudPaper>
-    }
+    <div style="margin-top: 1.5rem;">
+        @if (_loading)
+        {
+            <MudGrid>
+                @for (int i = 0; i < 6; i++)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" Class="rounded-lg mb-2" />
+                        <MudSkeleton Width="60%" />
+                        <MudSkeleton Width="40%" />
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+        else if (_recipes.Any())
+        {
+            <p class="results-count">@_recipes.Count recipe(s) found</p>
+            <MudGrid>
+                @foreach (var recipe in _recipes)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <RecipeWebsite.Components.RecipeCard Recipe="recipe" />
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+        else
+        {
+            <div class="empty-state">
+                <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0.75rem;">
+                    <circle cx="28" cy="28" r="26" fill="#4A7C59" opacity="0.06"/>
+                    <circle cx="24" cy="24" r="12" fill="none" stroke="#4A7C59" stroke-width="1.5" opacity="0.18"/>
+                    <path d="M33 33 L40 40" stroke="#4A7C59" stroke-width="2" opacity="0.15" stroke-linecap="round"/>
+                </svg>
+                <MudText Typo="Typo.body1" Color="Color.Tertiary">No recipes found. Try a different search or category.</MudText>
+            </div>
+        }
+    </div>
 </MudContainer>
 
 @code {
@@ -108,6 +95,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Parse query params from URL (from hero search or category links)
+        var uri = new Uri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        if (!string.IsNullOrEmpty(query["search"]))
+            _searchTerm = query["search"];
+
+        if (int.TryParse(query["category"], out var catId))
+            _selectedCategory = catId;
+
         _categories = await RecipeService.GetCategoriesAsync();
         await SearchRecipes();
     }
@@ -129,7 +126,7 @@
         }
     }
 
-    private async Task OnCategorySelected(int? categoryId)
+    private async Task OnCategorySelected(int categoryId)
     {
         _selectedCategory = _selectedCategory == categoryId ? null : categoryId;
         await SearchRecipes();
@@ -139,12 +136,6 @@
     {
         if (e.Key == "Enter")
             await SearchRecipes();
-    }
-
-    private async Task ClearFilter()
-    {
-        _selectedCategory = null;
-        await SearchRecipes();
     }
 
     private async Task HandleClear()

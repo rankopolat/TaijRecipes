@@ -66,6 +66,21 @@
 
     <MudMainContent>
         @Body
+
+        <footer class="site-footer">
+            <div class="site-footer-brand">Family Recipes</div>
+            <div class="site-footer-tagline">Treasured dishes passed down through generations</div>
+            <div class="site-footer-links">
+                <a @onclick="@(() => Navigation.NavigateTo(""))" style="cursor:pointer;">Home</a>
+                <a @onclick="@(() => Navigation.NavigateTo("recipes"))" style="cursor:pointer;">Recipes</a>
+                <AuthorizeView>
+                    <Authorized>
+                        <a @onclick="@(() => Navigation.NavigateTo("recipe/new"))" style="cursor:pointer;">Add Recipe</a>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+            <div class="site-footer-copy">Made with love for our family</div>
+        </footer>
     </MudMainContent>
 </MudLayout>
 

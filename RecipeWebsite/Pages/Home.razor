@@ -9,13 +9,12 @@
 <div class="hero-section">
     <div class="hero-content">
         <div class="hero-illustration">
-            <svg width="120" height="100" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="100" height="80" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <!-- Cutting board -->
                 <rect x="8" y="52" width="48" height="32" rx="4" fill="#D4A574" opacity="0.3"/>
                 <rect x="10" y="54" width="44" height="28" rx="3" fill="#D4A574" opacity="0.15"/>
                 <line x1="14" y1="58" x2="50" y2="58" stroke="#D4A574" stroke-width="0.5" opacity="0.2"/>
                 <line x1="14" y1="62" x2="50" y2="62" stroke="#D4A574" stroke-width="0.5" opacity="0.15"/>
-
                 <!-- Pot on right -->
                 <ellipse cx="82" cy="80" rx="28" ry="6" fill="rgba(0,0,0,0.08)"/>
                 <rect x="58" y="48" width="48" height="32" rx="7" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
@@ -30,41 +29,30 @@
                 <path d="M72 38 C72 32 76 30 74 22" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
                 <path d="M82 36 C82 30 86 28 84 20" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
                 <path d="M92 38 C92 32 88 30 90 22" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-
-                <!-- Herbs/leaves scattered -->
+                <!-- Herbs/leaves -->
                 <path d="M18 70 C14 66 14 62 18 60 C16 64 18 68 18 70Z" fill="rgba(255,255,255,0.2)"/>
                 <path d="M32 72 C28 68 28 64 32 62 C30 66 32 70 32 72Z" fill="rgba(255,255,255,0.15)"/>
                 <circle cx="24" cy="68" r="3" fill="#D4A574" opacity="0.2"/>
                 <circle cx="40" cy="74" r="2.5" fill="rgba(255,255,255,0.12)"/>
-
                 <!-- Spoon -->
                 <rect x="42" y="28" width="3" height="30" rx="1.5" fill="rgba(255,255,255,0.25)" transform="rotate(-15 42 28)"/>
                 <ellipse cx="41" cy="27" rx="5" ry="7" fill="rgba(255,255,255,0.2)" transform="rotate(-15 41 27)"/>
             </svg>
         </div>
-        <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 700; margin: 0 0 0.4rem; color: white; letter-spacing: -0.01em;">
+        <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 1.85rem; font-weight: 700; margin: 0 0 0.35rem; color: white; letter-spacing: -0.01em;">
             Our Family Recipes
         </h3>
-        <p style="font-size: 1rem; margin: 0 0 1.25rem; font-weight: 300; color: rgba(255,255,255,0.75); letter-spacing: 0.02em;">
+        <p style="font-size: 0.95rem; margin: 0; font-weight: 300; color: rgba(255,255,255,0.75); letter-spacing: 0.02em;">
             Treasured dishes passed down through generations
         </p>
-        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-            <MudButton Variant="Variant.Filled"
-                       Style="background: rgba(255,255,255,0.95); color: #2B5E3A; font-weight: 600; text-transform: none; font-size: 0.85rem;"
-                       StartIcon="@Icons.Material.Filled.MenuBook"
-                       OnClick="@(() => Navigation.NavigateTo("recipes"))">
-                Browse Recipes
-            </MudButton>
-            <AuthorizeView>
-                <Authorized>
-                    <MudButton Variant="Variant.Outlined"
-                               Style="border-color: rgba(255,255,255,0.4); color: white; text-transform: none; font-size: 0.85rem;"
-                               StartIcon="@Icons.Material.Filled.Add"
-                               OnClick="@(() => Navigation.NavigateTo("recipe/new"))">
-                        Add New
-                    </MudButton>
-                </Authorized>
-            </AuthorizeView>
+
+        <div class="hero-search">
+            <input type="text" placeholder="Search for a recipe..." @bind="_heroSearch" @bind:event="oninput"
+                   @onkeydown="HandleHeroSearchKey" />
+            <button @onclick="DoHeroSearch">
+                <MudIcon Icon="@Icons.Material.Filled.Search" Size="Size.Small" />
+                Search
+            </button>
         </div>
     </div>
     <div class="hero-wave">
@@ -75,11 +63,49 @@
 </div>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
-    <div class="section-heading">
-        <div class="section-heading-accent"></div>
-        <MudText Typo="Typo.h5" Style="font-family: 'Playfair Display', Georgia, serif;">
-            Recently Added
-        </MudText>
+
+    @* Category quick-browse *@
+    @if (_categories.Any())
+    {
+        <div class="section-heading">
+            <div class="section-heading-accent"></div>
+            <MudText Typo="Typo.h5" Style="font-family: 'Playfair Display', Georgia, serif;">
+                Browse by Category
+            </MudText>
+        </div>
+
+        <div class="category-browse" style="margin-bottom: 2.5rem;">
+            @foreach (var cat in _categories)
+            {
+                <div class="category-card" @onclick="@(() => Navigation.NavigateTo($"recipes?category={cat.Id}"))">
+                    <div class="category-card-icon">
+                        @if (!string.IsNullOrEmpty(cat.Icon))
+                        {
+                            @cat.Icon
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Restaurant" Size="Size.Medium" Color="Color.Primary" />
+                        }
+                    </div>
+                    <span class="category-card-name">@cat.Name</span>
+                </div>
+            }
+        </div>
+    }
+
+    @* Recently Added *@
+    <div class="d-flex align-center justify-space-between mb-4">
+        <div class="section-heading" style="margin-bottom: 0;">
+            <div class="section-heading-accent"></div>
+            <MudText Typo="Typo.h5" Style="font-family: 'Playfair Display', Georgia, serif;">
+                Recently Added
+            </MudText>
+        </div>
+        <span class="view-all-link" @onclick="@(() => Navigation.NavigateTo("recipes"))">
+            View all
+            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+        </span>
     </div>
 
     @if (_loading)
@@ -131,21 +157,45 @@
 
 @code {
     private List<Recipe> _recipes = new();
+    private List<Category> _categories = new();
     private bool _loading = true;
+    private string _heroSearch = "";
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _recipes = await RecipeService.GetRecentRecipesAsync(6);
+            var recipesTask = RecipeService.GetRecentRecipesAsync(6);
+            var categoriesTask = RecipeService.GetCategoriesAsync();
+            await Task.WhenAll(recipesTask, categoriesTask);
+            _recipes = recipesTask.Result;
+            _categories = categoriesTask.Result;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error loading recipes: {ex.Message}");
+            Console.WriteLine($"Error loading data: {ex.Message}");
         }
         finally
         {
             _loading = false;
         }
+    }
+
+    private void DoHeroSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(_heroSearch))
+        {
+            Navigation.NavigateTo($"recipes?search={Uri.EscapeDataString(_heroSearch)}");
+        }
+        else
+        {
+            Navigation.NavigateTo("recipes");
+        }
+    }
+
+    private void HandleHeroSearchKey(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            DoHeroSearch();
     }
 }
