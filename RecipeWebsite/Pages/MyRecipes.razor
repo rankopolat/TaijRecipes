@@ -1,7 +1,6 @@
 @page "/my-recipes"
 @using RecipeWebsite.Models
 @using RecipeWebsite.Services
-@attribute [Authorize]
 @inject RecipeService RecipeService
 @inject StorageService StorageService
 @inject AuthService AuthService
@@ -10,6 +9,14 @@
 @inject IDialogService DialogService
 
 <PageTitle>My Recipes</PageTitle>
+
+@if (!AuthService.IsAuthenticated)
+{
+    <MudContainer MaxWidth="MaxWidth.Small" Class="py-8 text-center">
+        <MudAlert Severity="Severity.Info">Please <MudLink Href="/login">sign in</MudLink> to view your recipes.</MudAlert>
+    </MudContainer>
+    return;
+}
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
     <div class="d-flex justify-space-between align-center mb-4">

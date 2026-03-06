@@ -1,12 +1,20 @@
 @page "/profile"
 @using RecipeWebsite.Models
 @using RecipeWebsite.Services
-@attribute [Authorize]
 @inject ProfileService ProfileService
 @inject AuthService AuthService
+@inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 
 <PageTitle>Profile</PageTitle>
+
+@if (!AuthService.IsAuthenticated)
+{
+    <MudContainer MaxWidth="MaxWidth.Small" Class="py-8 text-center">
+        <MudAlert Severity="Severity.Info">Please <MudLink Href="/login">sign in</MudLink> to view your profile.</MudAlert>
+    </MudContainer>
+    return;
+}
 
 <MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
     <MudCard Class="pa-4">

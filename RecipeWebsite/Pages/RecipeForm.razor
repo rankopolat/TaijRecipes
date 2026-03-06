@@ -2,8 +2,6 @@
 @page "/recipe/edit/{Id:int}"
 @using RecipeWebsite.Models
 @using RecipeWebsite.Services
-@using Microsoft.AspNetCore.Components.Authorization
-@attribute [Authorize]
 @inject RecipeService RecipeService
 @inject StorageService StorageService
 @inject AuthService AuthService
@@ -11,6 +9,14 @@
 @inject ISnackbar Snackbar
 
 <PageTitle>@(_isEdit ? "Edit Recipe" : "Add New Recipe")</PageTitle>
+
+@if (!AuthService.IsAuthenticated)
+{
+    <MudContainer MaxWidth="MaxWidth.Small" Class="py-8 text-center">
+        <MudAlert Severity="Severity.Info">Please <MudLink Href="/login">sign in</MudLink> to add recipes.</MudAlert>
+    </MudContainer>
+    return;
+}
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="py-6">
     <MudText Typo="Typo.h4" Class="mb-4" Style="font-family: 'Georgia', serif;">
