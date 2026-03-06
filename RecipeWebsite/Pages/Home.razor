@@ -9,50 +9,78 @@
 <div class="hero-section">
     <div class="hero-content">
         <div class="hero-illustration">
-            <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="36" cy="36" r="34" fill="rgba(255,255,255,0.08)"/>
-                <ellipse cx="36" cy="52" rx="22" ry="5" fill="rgba(255,255,255,0.08)"/>
-                <rect x="18" y="30" width="36" height="22" rx="5" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
-                <rect x="15" y="28" width="42" height="4" rx="2" fill="rgba(255,255,255,0.7)"/>
-                <rect x="11" y="27" width="7" height="10" rx="3" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5"/>
-                <rect x="54" y="27" width="7" height="10" rx="3" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.5"/>
-                <path d="M28 23 C28 19 31 17 30 12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                <path d="M36 21 C36 17 39 15 38 10" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                <path d="M44 23 C44 19 41 17 42 12" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <svg width="120" height="100" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Cutting board -->
+                <rect x="8" y="52" width="48" height="32" rx="4" fill="#D4A574" opacity="0.3"/>
+                <rect x="10" y="54" width="44" height="28" rx="3" fill="#D4A574" opacity="0.15"/>
+                <line x1="14" y1="58" x2="50" y2="58" stroke="#D4A574" stroke-width="0.5" opacity="0.2"/>
+                <line x1="14" y1="62" x2="50" y2="62" stroke="#D4A574" stroke-width="0.5" opacity="0.15"/>
+
+                <!-- Pot on right -->
+                <ellipse cx="82" cy="80" rx="28" ry="6" fill="rgba(0,0,0,0.08)"/>
+                <rect x="58" y="48" width="48" height="32" rx="7" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+                <rect x="55" y="45" width="54" height="5" rx="2.5" fill="rgba(255,255,255,0.6)"/>
+                <rect x="50" y="44" width="8" height="12" rx="3.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+                <rect x="102" y="44" width="8" height="12" rx="3.5" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+                <!-- Food in pot -->
+                <circle cx="72" cy="62" r="5" fill="#D4A574" opacity="0.25"/>
+                <circle cx="84" cy="58" r="4" fill="rgba(255,255,255,0.15)"/>
+                <circle cx="90" cy="64" r="3.5" fill="#D4A574" opacity="0.18"/>
+                <!-- Steam -->
+                <path d="M72 38 C72 32 76 30 74 22" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M82 36 C82 30 86 28 84 20" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M92 38 C92 32 88 30 90 22" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+                <!-- Herbs/leaves scattered -->
+                <path d="M18 70 C14 66 14 62 18 60 C16 64 18 68 18 70Z" fill="rgba(255,255,255,0.2)"/>
+                <path d="M32 72 C28 68 28 64 32 62 C30 66 32 70 32 72Z" fill="rgba(255,255,255,0.15)"/>
+                <circle cx="24" cy="68" r="3" fill="#D4A574" opacity="0.2"/>
+                <circle cx="40" cy="74" r="2.5" fill="rgba(255,255,255,0.12)"/>
+
+                <!-- Spoon -->
+                <rect x="42" y="28" width="3" height="30" rx="1.5" fill="rgba(255,255,255,0.25)" transform="rotate(-15 42 28)"/>
+                <ellipse cx="41" cy="27" rx="5" ry="7" fill="rgba(255,255,255,0.2)" transform="rotate(-15 41 27)"/>
             </svg>
         </div>
-        <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2.2rem; font-weight: 700; margin: 0 0 0.5rem; color: white; letter-spacing: -0.01em;">
+        <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 2rem; font-weight: 700; margin: 0 0 0.4rem; color: white; letter-spacing: -0.01em;">
             Our Family Recipes
         </h3>
-        <p style="font-size: 1.1rem; opacity: 0.8; margin: 0 0 1.5rem; font-weight: 300; letter-spacing: 0.01em;">
+        <p style="font-size: 1rem; margin: 0 0 1.25rem; font-weight: 300; color: rgba(255,255,255,0.75); letter-spacing: 0.02em;">
             Treasured dishes passed down through generations
         </p>
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Surface"
-                   Size="Size.Large"
-                   StartIcon="@Icons.Material.Filled.MenuBook"
-                   OnClick="@(() => Navigation.NavigateTo("recipes"))">
-            Browse Recipes
-        </MudButton>
+        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <MudButton Variant="Variant.Filled"
+                       Style="background: rgba(255,255,255,0.95); color: #2B5E3A; font-weight: 600; text-transform: none; font-size: 0.85rem;"
+                       StartIcon="@Icons.Material.Filled.MenuBook"
+                       OnClick="@(() => Navigation.NavigateTo("recipes"))">
+                Browse Recipes
+            </MudButton>
+            <AuthorizeView>
+                <Authorized>
+                    <MudButton Variant="Variant.Outlined"
+                               Style="border-color: rgba(255,255,255,0.4); color: white; text-transform: none; font-size: 0.85rem;"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               OnClick="@(() => Navigation.NavigateTo("recipe/new"))">
+                        Add New
+                    </MudButton>
+                </Authorized>
+            </AuthorizeView>
+        </div>
     </div>
     <div class="hero-wave">
-        <svg viewBox="0 0 1200 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,16 C200,32 400,0 600,16 C800,32 1000,0 1200,16 L1200,32 L0,32 Z" fill="#F5F7F2"/>
+        <svg viewBox="0 0 1200 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,14 C300,28 600,0 900,14 C1050,21 1150,10 1200,14 L1200,28 L0,28 Z" fill="#FAFBF8"/>
         </svg>
     </div>
 </div>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
-    <div class="section-divider">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 3C9 8 7 10 7 14c0 3 2 5 5 5s5-2 5-5c0-4-2-6-5-11z"/>
-            <path d="M12 22v-4" stroke="currentColor" stroke-width="1.5" fill="none"/>
-        </svg>
+    <div class="section-heading">
+        <div class="section-heading-accent"></div>
+        <MudText Typo="Typo.h5" Style="font-family: 'Playfair Display', Georgia, serif;">
+            Recently Added
+        </MudText>
     </div>
-
-    <MudText Typo="Typo.h5" Class="mb-4" Style="font-family: 'Playfair Display', Georgia, serif;">
-        Recently Added
-    </MudText>
 
     @if (_loading)
     {
@@ -61,7 +89,7 @@
             {
                 <MudItem xs="12" sm="6" md="4">
                     <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" Class="rounded-lg mb-2" />
-                    <MudSkeleton Width="60%" />
+                    <MudSkeleton Width="60%" Class="mt-2" />
                     <MudSkeleton Width="40%" />
                 </MudItem>
             }
@@ -80,16 +108,24 @@
     }
     else
     {
-        <MudPaper Class="pa-8 text-center my-4" Elevation="0" Style="background: transparent;">
-            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem;">
-                <circle cx="32" cy="32" r="30" fill="#4A7C59" opacity="0.06"/>
-                <rect x="16" y="24" width="32" height="20" rx="4" fill="none" stroke="#4A7C59" stroke-width="1.5" opacity="0.2"/>
-                <rect x="14" y="22" width="36" height="4" rx="2" fill="#4A7C59" opacity="0.12"/>
-                <line x1="24" y1="32" x2="40" y2="32" stroke="#4A7C59" stroke-width="1.5" opacity="0.12" stroke-linecap="round"/>
-                <line x1="28" y1="38" x2="36" y2="38" stroke="#4A7C59" stroke-width="1.5" opacity="0.1" stroke-linecap="round"/>
+        <div class="empty-state">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1rem;">
+                <circle cx="40" cy="40" r="38" fill="#4A7C59" opacity="0.04"/>
+                <circle cx="40" cy="40" r="28" fill="#4A7C59" opacity="0.03"/>
+                <rect x="22" y="30" width="36" height="24" rx="5" fill="none" stroke="#4A7C59" stroke-width="1.5" opacity="0.15"/>
+                <rect x="20" y="28" width="40" height="4" rx="2" fill="#4A7C59" opacity="0.1"/>
+                <path d="M32 40 L48 40" stroke="#D4A574" stroke-width="1.5" opacity="0.2" stroke-linecap="round"/>
+                <path d="M35 46 L45 46" stroke="#D4A574" stroke-width="1.2" opacity="0.15" stroke-linecap="round"/>
+                <path d="M36 22 C36 18 40 16 38 10" stroke="#4A7C59" stroke-width="1.2" opacity="0.08" fill="none" stroke-linecap="round"/>
+                <path d="M44 22 C44 18 40 16 42 10" stroke="#4A7C59" stroke-width="1.2" opacity="0.08" fill="none" stroke-linecap="round"/>
             </svg>
-            <MudText Typo="Typo.body1" Color="Color.Tertiary">No recipes yet. Be the first to add one!</MudText>
-        </MudPaper>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary" Class="mb-3">No recipes yet. Be the first to share a family favorite!</MudText>
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       OnClick="@(() => Navigation.NavigateTo("recipe/new"))">
+                Add Your First Recipe
+            </MudButton>
+        </div>
     }
 </MudContainer>
 

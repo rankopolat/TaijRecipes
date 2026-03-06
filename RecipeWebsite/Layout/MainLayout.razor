@@ -4,21 +4,22 @@
 @inject NavigationManager Navigation
 
 <MudLayout>
-    <MudAppBar Elevation="2">
+    <MudAppBar Elevation="0" Dense="true" Style="border-bottom: 1px solid rgba(255,255,255,0.1);">
         <MudIconButton Icon="@Icons.Material.Filled.Menu"
                        Color="Color.Inherit"
                        Edge="Edge.Start"
+                       Size="Size.Small"
                        OnClick="@ToggleDrawer" />
-        <span @onclick="@(() => Navigation.NavigateTo(""))" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
-            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M13 3C8 8 5 12 7 17C9 22 13 23 13 23C13 23 17 22 19 17C21 12 18 8 13 3Z" fill="rgba(255,255,255,0.85)" stroke="white" stroke-width="1"/>
-                <path d="M13 10V21" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-linecap="round"/>
-                <path d="M13 14C11 12 9 12 8 13" stroke="rgba(255,255,255,0.4)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
-                <path d="M13 17C15 15 17 15 18 16" stroke="rgba(255,255,255,0.4)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+        <span @onclick="@(() => Navigation.NavigateTo(""))" style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3C7 9 5 12 7 17C9 21 12 22 12 22C12 22 15 21 17 17C19 12 17 9 12 3Z" fill="rgba(255,255,255,0.9)"/>
+                <path d="M12 10V20" stroke="rgba(255,255,255,0.4)" stroke-width="0.8" stroke-linecap="round"/>
+                <path d="M12 13C10 11.5 8.5 11.5 7.5 12.5" stroke="rgba(255,255,255,0.3)" stroke-width="0.6" fill="none"/>
+                <path d="M12 16C14 14.5 15.5 14.5 16.5 15.5" stroke="rgba(255,255,255,0.3)" stroke-width="0.6" fill="none"/>
             </svg>
-            <MudText Typo="Typo.h6" Style="font-family: 'Playfair Display', Georgia, serif;">
+            <span style="font-family: 'Playfair Display', Georgia, serif; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.02em;">
                 Family Recipes
-            </MudText>
+            </span>
         </span>
         <MudSpacer />
 
@@ -26,11 +27,13 @@
             <Authorized>
                 <MudButton Variant="Variant.Text" Color="Color.Inherit"
                            StartIcon="@Icons.Material.Filled.Add"
+                           Size="Size.Small"
                            OnClick="@(() => Navigation.NavigateTo("recipe/new"))"
-                           Class="d-none d-sm-flex">
+                           Class="d-none d-sm-flex"
+                           Style="font-size: 0.8rem; text-transform: none;">
                     Add Recipe
                 </MudButton>
-                <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit">
+                <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" Size="Size.Small">
                     <MudMenuItem OnClick="@(() => Navigation.NavigateTo("my-recipes"))"
                                  Icon="@Icons.Material.Filled.MenuBook">
                         My Recipes
@@ -48,6 +51,8 @@
             </Authorized>
             <NotAuthorized>
                 <MudButton Variant="Variant.Text" Color="Color.Inherit"
+                           Size="Size.Small"
+                           Style="font-size: 0.8rem; text-transform: none;"
                            OnClick="@(() => Navigation.NavigateTo("login"))">
                     Sign In
                 </MudButton>
@@ -55,7 +60,7 @@
         </AuthorizeView>
     </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="1">
         <NavMenu />
     </MudDrawer>
 

@@ -1,7 +1,7 @@
 /* Base styles */
 html, body {
     font-family: 'Lato', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #F5F7F2;
+    background-color: #FAFBF8;
     margin: 0;
     padding: 0;
 }
@@ -10,30 +10,61 @@ h1:focus {
     outline: none;
 }
 
-/* Hero section */
+/* ===== Compact App Bar ===== */
+.mud-appbar {
+    height: 40px !important;
+    min-height: 40px !important;
+}
+
+.mud-appbar .mud-toolbar {
+    min-height: 40px !important;
+    height: 40px !important;
+    padding: 0 10px !important;
+}
+
+.mud-appbar .mud-typography-h6 {
+    font-size: 0.9rem !important;
+}
+
+.mud-appbar .mud-icon-button {
+    padding: 4px !important;
+}
+
+.mud-appbar .mud-button {
+    padding: 2px 8px !important;
+    min-height: 28px !important;
+}
+
+.mud-main-content {
+    padding-top: 40px !important;
+}
+
+/* ===== Hero section ===== */
 .hero-section {
     position: relative;
-    background: linear-gradient(160deg, #4A7C59 0%, #3D6B4A 50%, #335A3F 100%);
+    background: linear-gradient(135deg, #3D6B4A 0%, #2B5E3A 40%, #1E4D2E 100%);
     color: white;
-    padding: 3rem 2rem 4rem;
+    padding: 3rem 2rem 3.5rem;
     text-align: center;
     overflow: hidden;
-    margin: 0 -24px;
+    margin: -24px -24px 0;
 }
 
 .hero-section::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 30%, rgba(255,255,255,0.04) 0%, transparent 50%);
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 15% 80%, rgba(212, 165, 116, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 20%, rgba(255,255,255,0.06) 0%, transparent 45%),
+        radial-gradient(circle at 50% 110%, rgba(212, 165, 116, 0.08) 0%, transparent 40%);
     pointer-events: none;
 }
 
 .hero-content {
     position: relative;
     z-index: 1;
-    max-width: 600px;
+    max-width: 560px;
     margin: 0 auto;
 }
 
@@ -46,90 +77,112 @@ h1:focus {
     bottom: -1px;
     left: 0;
     width: 100%;
-    z-index: 1;
+    z-index: 2;
     line-height: 0;
 }
 
 .hero-wave svg {
     display: block;
     width: 100%;
-    height: 32px;
+    height: 28px;
 }
 
-/* Section divider */
+/* ===== Section heading with accent ===== */
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.section-heading-accent {
+    width: 4px;
+    height: 24px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #4A7C59, #D4A574);
+}
+
+/* ===== Section divider ===== */
 .section-divider {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    margin: 1.75rem 0;
+    margin: 1.5rem 0;
 }
 
 .section-divider::before,
 .section-divider::after {
     content: '';
     flex: 1;
-    max-width: 80px;
+    max-width: 60px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(74, 124, 89, 0.25), transparent);
+    background: linear-gradient(90deg, transparent, #C8D4C0, transparent);
 }
 
 .section-divider svg {
-    color: #4A7C59;
-    opacity: 0.35;
+    color: #8BA888;
+    opacity: 0.5;
 }
 
-/* Recipe card hover effect */
+/* ===== Recipe card ===== */
 .recipe-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     border-radius: 12px;
     overflow: hidden;
+    border: 1px solid rgba(74, 124, 89, 0.06);
 }
 
 .recipe-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(74, 124, 89, 0.15) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(45, 59, 45, 0.1), 0 2px 8px rgba(74, 124, 89, 0.08) !important;
 }
 
-/* Drawer header */
+/* ===== Drawer ===== */
 .drawer-header {
     padding: 1.25rem 1.25rem 1rem;
     text-align: center;
+    background: linear-gradient(180deg, rgba(74, 124, 89, 0.04) 0%, transparent 100%);
 }
 
 .drawer-header-title {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: #2D3B2D;
-    margin-top: 0.5rem;
-    letter-spacing: 0.02em;
+    margin-top: 0.4rem;
+    letter-spacing: 0.03em;
+}
+
+.drawer-header-sub {
+    font-size: 0.7rem;
+    color: #8BA888;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.15rem;
 }
 
 .drawer-header-divider {
-    width: 40px;
+    width: 32px;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #4A7C59, transparent);
-    margin: 0.6rem auto 0;
-    opacity: 0.3;
+    background: linear-gradient(90deg, #4A7C59, #D4A574);
+    margin: 0.5rem auto 0;
+    border-radius: 1px;
 }
 
-/* Auth card decoration */
+/* ===== Auth pages ===== */
 .auth-card-decoration {
     text-align: center;
-    padding: 1.5rem 0 0.25rem;
+    padding: 1.5rem 0 0.5rem;
 }
 
-/* Empty state */
-.empty-state-illustration {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 1rem;
-    color: #5A6B5A;
+/* ===== Empty state ===== */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
 }
 
-/* Blazor error UI */
+/* ===== Blazor error UI ===== */
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -160,7 +213,7 @@ h1:focus {
     content: "An error has occurred.";
 }
 
-/* Loading spinner */
+/* ===== Loading spinner ===== */
 .loading-progress {
     position: relative;
     display: block;
@@ -171,7 +224,7 @@ h1:focus {
 
 .loading-progress circle {
     fill: none;
-    stroke: #DEE8DE;
+    stroke: #E4EBE0;
     stroke-width: 0.6rem;
     transform-origin: 50% 50%;
     transform: rotate(-90deg);
@@ -183,58 +236,25 @@ h1:focus {
     transition: stroke-dasharray 0.05s ease-in-out;
 }
 
-/* Print styles */
+/* ===== Print styles ===== */
 @media print {
-    .no-print,
-    .mud-appbar,
-    .mud-drawer,
-    .mud-snackbar-provider,
-    .mud-popover-provider,
-    #blazor-error-ui,
-    button,
-    .mud-chip,
-    .mud-button,
-    .hero-section,
-    .section-divider {
+    .no-print, .mud-appbar, .mud-drawer, .mud-snackbar-provider,
+    .mud-popover-provider, #blazor-error-ui, button, .mud-chip,
+    .mud-button, .hero-section, .section-divider, .section-heading-accent {
         display: none !important;
     }
 
     body {
         background: white !important;
-        background-image: none !important;
         color: black !important;
         font-size: 12pt;
     }
 
-    .mud-main-content {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-
-    .mud-container {
-        max-width: 100% !important;
-        padding: 0 !important;
-    }
-
-    .mud-paper {
-        box-shadow: none !important;
-        border: none !important;
-    }
-
-    .mud-image {
-        max-height: 300px !important;
-        page-break-inside: avoid;
-    }
-
-    .mud-timeline-item {
-        page-break-inside: avoid;
-    }
-
-    .mud-table {
-        page-break-inside: avoid;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-        page-break-after: avoid;
-    }
+    .mud-main-content { padding: 0 !important; margin: 0 !important; }
+    .mud-container { max-width: 100% !important; padding: 0 !important; }
+    .mud-paper { box-shadow: none !important; border: none !important; }
+    .mud-image { max-height: 300px !important; page-break-inside: avoid; }
+    .mud-timeline-item { page-break-inside: avoid; }
+    .mud-table { page-break-inside: avoid; }
+    h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
 }
