@@ -10,7 +10,19 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    <RecipeWebsite.Pages.Login />
+                    @if (context.User.Identity?.IsAuthenticated != true)
+                    {
+                        <RedirectToLogin />
+                    }
+                    else
+                    {
+                        <MudContainer MaxWidth="MaxWidth.Small" Class="py-8 text-center">
+                            <MudText Typo="Typo.h5">Access Denied</MudText>
+                            <MudText Typo="Typo.body1" Color="Color.Tertiary" Class="mb-4">
+                                You don't have permission to view this page.
+                            </MudText>
+                        </MudContainer>
+                    }
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
