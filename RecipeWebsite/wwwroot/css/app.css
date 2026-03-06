@@ -1,13 +1,86 @@
 /* Base styles */
 html, body {
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #FBF7F2;
+    font-family: 'Lato', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #F5F7F2;
     margin: 0;
     padding: 0;
+    /* Subtle linen/leaf texture */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%234A7C59' fill-opacity='0.04'%3E%3Cpath d='M0 0h10v10H0zm20 0h10v10H20zm20 0h10v10H40zm20 0h10v10H60zM10 10h10v10H10zm20 0h10v10H30zm20 0h10v10H50zm20 0h10v10H70zM0 20h10v10H0zm20 0h10v10H20zm20 0h10v10H40zm20 0h10v10H60zM10 30h10v10H10zm20 0h10v10H30zm20 0h10v10H50zm20 0h10v10H70zM0 40h10v10H0zm20 0h10v10H20zm20 0h10v10H40zm20 0h10v10H60zM10 50h10v10H10zm20 0h10v10H30zm20 0h10v10H50zm20 0h10v10H70zM0 60h10v10H0zm20 0h10v10H20zm20 0h10v10H40zm20 0h10v10H60zM10 70h10v10H10zm20 0h10v10H30zm20 0h10v10H50zm20 0h10v10H70z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 h1:focus {
     outline: none;
+}
+
+/* Hero section */
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, #4A7C59 0%, #365E42 60%, #2D5038 100%);
+    color: white;
+    padding: 3.5rem 2rem 4.5rem;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 0 0 0 0;
+    margin: 0 -24px;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 5 C25 10, 20 20, 25 30 C20 25, 10 20, 5 25 C10 20, 20 15, 30 5z' fill='%23ffffff' fill-opacity='0.04'/%3E%3Cpath d='M55 35 C50 40, 45 50, 50 55 C45 50, 35 45, 30 50 C35 45, 45 40, 55 35z' fill='%23ffffff' fill-opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.hero-section h3,
+.hero-section h6,
+.hero-section p {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-illustration {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1rem;
+}
+
+.hero-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    line-height: 0;
+}
+
+.hero-wave svg {
+    display: block;
+    width: 100%;
+    height: 40px;
+}
+
+/* Herb divider */
+.section-herbs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 2rem 0;
+    color: #4A7C59;
+    opacity: 0.5;
+}
+
+.section-herbs::before,
+.section-herbs::after {
+    content: '';
+    flex: 1;
+    max-width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #4A7C59, transparent);
 }
 
 /* Recipe card hover effect */
@@ -17,7 +90,29 @@ h1:focus {
 
 .recipe-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 8px 25px rgba(74, 124, 89, 0.2) !important;
+}
+
+/* Drawer header */
+.drawer-header {
+    padding: 1rem 1rem 0.75rem;
+    border-bottom: 1px solid rgba(74, 124, 89, 0.12);
+    margin-bottom: 0.5rem;
+}
+
+/* Auth card decoration */
+.auth-card-decoration {
+    text-align: center;
+    padding: 1rem 0 0.5rem;
+}
+
+/* Empty state */
+.empty-state-illustration {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    color: #5A6B5A;
 }
 
 /* Blazor error UI */
@@ -44,7 +139,7 @@ h1:focus {
     background: #b32121;
     padding: 1rem;
     color: white;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 .blazor-error-boundary::after {
@@ -62,14 +157,14 @@ h1:focus {
 
 .loading-progress circle {
     fill: none;
-    stroke: #e8e4de;
+    stroke: #DEE8DE;
     stroke-width: 0.6rem;
     transform-origin: 50% 50%;
     transform: rotate(-90deg);
 }
 
 .loading-progress circle:last-child {
-    stroke: #C4704A;
+    stroke: #4A7C59;
     stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
     transition: stroke-dasharray 0.05s ease-in-out;
 }
@@ -84,12 +179,15 @@ h1:focus {
     #blazor-error-ui,
     button,
     .mud-chip,
-    .mud-button {
+    .mud-button,
+    .hero-section,
+    .section-herbs {
         display: none !important;
     }
 
     body {
         background: white !important;
+        background-image: none !important;
         color: black !important;
         font-size: 12pt;
     }

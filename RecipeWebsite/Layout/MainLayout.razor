@@ -9,10 +9,17 @@
                        Color="Color.Inherit"
                        Edge="Edge.Start"
                        OnClick="@ToggleDrawer" />
-        <MudText Typo="Typo.h6" Style="font-family: 'Georgia', serif; cursor: pointer;"
-                 @onclick="@(() => Navigation.NavigateTo(""))">
-            Family Recipes
-        </MudText>
+        <span @onclick="@(() => Navigation.NavigateTo(""))" style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 3C8 8 5 12 7 17C9 22 13 23 13 23C13 23 17 22 19 17C21 12 18 8 13 3Z" fill="rgba(255,255,255,0.85)" stroke="white" stroke-width="1"/>
+                <path d="M13 10V21" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-linecap="round"/>
+                <path d="M13 14C11 12 9 12 8 13" stroke="rgba(255,255,255,0.4)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+                <path d="M13 17C15 15 17 15 18 16" stroke="rgba(255,255,255,0.4)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+            </svg>
+            <MudText Typo="Typo.h6" Style="font-family: 'Playfair Display', Georgia, serif;">
+                Family Recipes
+            </MudText>
+        </span>
         <MudSpacer />
 
         <AuthorizeView>

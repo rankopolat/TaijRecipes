@@ -1,6 +1,7 @@
 @page "/my-recipes"
 @using RecipeWebsite.Models
 @using RecipeWebsite.Services
+@using RecipeWebsite.Helpers
 @inject RecipeService RecipeService
 @inject StorageService StorageService
 @inject AuthService AuthService
@@ -20,7 +21,7 @@
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
     <div class="d-flex justify-space-between align-center mb-4">
-        <MudText Typo="Typo.h4" Style="font-family: 'Georgia', serif;">My Recipes</MudText>
+        <MudText Typo="Typo.h4" Style="font-family: 'Playfair Display', Georgia, serif;">My Recipes</MudText>
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.Add"
@@ -48,7 +49,7 @@
                         }
                         else
                         {
-                            <MudCardMedia Image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='180'%3E%3Crect fill='%23f5f0eb' width='400' height='180'/%3E%3Ctext fill='%23c4704a' font-size='48' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3E🍽%3C/text%3E%3C/svg%3E"
+                            <MudCardMedia Image="@PlaceholderImages.GetForCategory(recipe.CategoryName, 400, 180)"
                                           Height="180"
                                           Style="cursor: pointer;"
                                           @onclick="@(() => Navigation.NavigateTo($"recipe/{recipe.Id}"))" />

@@ -47,7 +47,7 @@
         }
 
         @* Title & Meta *@
-        <MudText Typo="Typo.h4" Class="mb-2" Style="font-family: 'Georgia', serif;">
+        <MudText Typo="Typo.h4" Class="mb-2" Style="font-family: 'Playfair Display', Georgia, serif;">
             @_recipe.Title
         </MudText>
 
@@ -86,10 +86,12 @@
             </MudText>
         }
 
-        <MudDivider Class="mb-6" />
+        <div class="section-herbs">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9 7 7 9 7 13c0 3 2 5 5 5s5-2 5-5c0-4-2-6-5-11z" opacity="0.6"/><path d="M12 22v-6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        </div>
 
         @* Ingredients *@
-        <MudText Typo="Typo.h5" Class="mb-3" Style="font-family: 'Georgia', serif;">
+        <MudText Typo="Typo.h5" Class="mb-3" Style="font-family: 'Playfair Display', Georgia, serif;">
             <MudIcon Icon="@Icons.Material.Filled.ShoppingCart" Class="mr-1" /> Ingredients
         </MudText>
 
@@ -113,10 +115,12 @@
             </tbody>
         </MudSimpleTable>
 
-        <MudDivider Class="mb-6" />
+        <div class="section-herbs">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9 7 7 9 7 13c0 3 2 5 5 5s5-2 5-5c0-4-2-6-5-11z" opacity="0.6"/><path d="M12 22v-6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        </div>
 
         @* Steps *@
-        <MudText Typo="Typo.h5" Class="mb-3" Style="font-family: 'Georgia', serif;">
+        <MudText Typo="Typo.h5" Class="mb-3" Style="font-family: 'Playfair Display', Georgia, serif;">
             <MudIcon Icon="@Icons.Material.Filled.FormatListNumbered" Class="mr-1" /> Instructions
         </MudText>
 
@@ -132,7 +136,9 @@
             }
         </MudTimeline>
 
-        <MudDivider Class="mb-6" />
+        <div class="section-herbs">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C9 7 7 9 7 13c0 3 2 5 5 5s5-2 5-5c0-4-2-6-5-11z" opacity="0.6"/><path d="M12 22v-6" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        </div>
 
         @* Comments *@
         <RecipeWebsite.Components.CommentSection RecipeId="@Id" />
