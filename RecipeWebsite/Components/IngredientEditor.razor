@@ -1,54 +1,185 @@
 @using RecipeWebsite.Models
+@using RecipeWebsite.Services
+@inject WoolworthsService WoolworthsService
 
-<div>
+<div class="ingredient-editor">
     @for (int i = 0; i < Ingredients.Count; i++)
     {
         var index = i;
-        <MudGrid Class="mb-2">
-            <MudItem xs="3" sm="2">
+        <div class="ingredient-row">
+            <span class="ingredient-number">@(index + 1)</span>
+            <div class="ingredient-fields">
                 <MudTextField @bind-Value="Ingredients[index].Amount"
-                              Label="@(index == 0 ? "Amount" : "")"
+                              Placeholder="Qty"
                               Variant="Variant.Outlined"
-                              Placeholder="2"
-                              Margin="Margin.Dense" />
-            </MudItem>
-            <MudItem xs="3" sm="2">
-                <MudTextField @bind-Value="Ingredients[index].Unit"
-                              Label="@(index == 0 ? "Unit" : "")"
-                              Variant="Variant.Outlined"
-                              Placeholder="cups"
-                              Margin="Margin.Dense" />
-            </MudItem>
-            <MudItem xs="5" sm="7">
-                <MudTextField @bind-Value="Ingredients[index].Name"
-                              Label="@(index == 0 ? "Ingredient" : "")"
-                              Variant="Variant.Outlined"
-                              Placeholder="flour"
-                              Margin="Margin.Dense" />
-            </MudItem>
-            <MudItem xs="1" Class="d-flex align-end">
-                <MudIconButton Icon="@Icons.Material.Filled.Close"
-                               Color="Color.Error"
-                               Size="Size.Small"
-                               OnClick="@(() => RemoveIngredient(index))"
-                               Disabled="Ingredients.Count <= 1" />
-            </MudItem>
-        </MudGrid>
+                              Margin="Margin.Dense"
+                              Style="max-width: 80px;" />
+                <MudSelect @bind-Value="Ingredients[index].Unit"
+                           Placeholder="Unit"
+                           Variant="Variant.Outlined"
+                           Margin="Margin.Dense"
+                           Dense="true"
+                           Style="max-width: 110px;">
+                    <MudSelectItem Value="@("")">-</MudSelectItem>
+                    <MudSelectItem Value="@("g")">g</MudSelectItem>
+                    <MudSelectItem Value="@("kg")">kg</MudSelectItem>
+                    <MudSelectItem Value="@("ml")">ml</MudSelectItem>
+                    <MudSelectItem Value="@("L")">L</MudSelectItem>
+                    <MudSelectItem Value="@("tsp")">tsp</MudSelectItem>
+                    <MudSelectItem Value="@("tbsp")">tbsp</MudSelectItem>
+                    <MudSelectItem Value="@("cup")">cup</MudSelectItem>
+                    <MudSelectItem Value="@("cups")">cups</MudSelectItem>
+                    <MudSelectItem Value="@("pinch")">pinch</MudSelectItem>
+                    <MudSelectItem Value="@("piece")">piece</MudSelectItem>
+                    <MudSelectItem Value="@("slice")">slice</MudSelectItem>
+                    <MudSelectItem Value="@("clove")">clove</MudSelectItem>
+                    <MudSelectItem Value="@("bunch")">bunch</MudSelectItem>
+                    <MudSelectItem Value="@("can")">can</MudSelectItem>
+                    <MudSelectItem Value="@("packet")">packet</MudSelectItem>
+                </MudSelect>
+                <div style="flex: 1; position: relative;">
+                    <MudTextField @bind-Value="Ingredients[index].Name"
+                                  Placeholder="Search Woolworths products..."
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search"
+                                  Immediate="true"
+                                  TextChanged="@(val => OnIngredientSearchChanged(index, val))" />
+                    @if (_activeSearchIndex == index && _searchResults.Any())
+                    {
+                        <div class="product-dropdown">
+                            @foreach (var product in _searchResults)
+                            {
+                                <div class="product-item" @onclick="@(() => SelectProduct(index, product))">
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="" class="product-item-img" />
+                                    }
+                                    else
+                                    {
+                                        <div class="product-item-img product-item-img-placeholder">
+                                            <span class="material-icons" style="font-size: 1.2rem; color: #8BA888;">shopping_basket</span>
+                                        </div>
+                                    }
+                                    <div class="product-item-info">
+                                        <span class="product-item-name">@product.Name</span>
+                                        <span class="product-item-size">@product.PackageSize</span>
+                                    </div>
+                                    <span class="product-item-price">$@product.Price.ToString("F2")</span>
+                                </div>
+                            }
+                            @if (_searchResults.Any(p => p.IsFromApi))
+                            {
+                                <div class="product-dropdown-source">
+                                    <span class="material-icons" style="font-size: 0.7rem;">storefront</span>
+                                    Live prices from Woolworths
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="product-dropdown-source">
+                                    Approximate prices
+                                </div>
+                            }
+                        </div>
+                    }
+                    @if (_activeSearchIndex == index && _isSearching)
+                    {
+                        <div class="product-dropdown">
+                            <div style="padding: 1rem; text-align: center;">
+                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Primary" />
+                                <span style="margin-left: 0.5rem; font-size: 0.8rem; color: #7A8B69;">Searching Woolworths...</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <MudIconButton Icon="@Icons.Material.Filled.DeleteOutline"
+                           Color="Color.Default"
+                           Size="Size.Small"
+                           OnClick="@(() => RemoveIngredient(index))"
+                           Disabled="Ingredients.Count <= 1"
+                           Style="color: #b0b0b0;" />
+        </div>
     }
 
-    <MudButton Variant="Variant.Outlined"
+    <MudButton Variant="Variant.Text"
                Color="Color.Primary"
                StartIcon="@Icons.Material.Filled.Add"
                OnClick="AddIngredient"
                Size="Size.Small"
-               Class="mt-2">
+               Class="mt-2"
+               Style="text-transform: none; font-weight: 600;">
         Add Ingredient
     </MudButton>
+
+    @if (_estimatedTotal > 0)
+    {
+        <div class="ingredient-total">
+            <span class="material-icons" style="font-size: 1rem; color: #4A7C59;">receipt_long</span>
+            <span>Estimated cost:</span>
+            <strong>$@_estimatedTotal.ToString("F2")</strong>
+        </div>
+    }
 </div>
 
 @code {
     [Parameter] public List<Ingredient> Ingredients { get; set; } = new();
     [Parameter] public EventCallback<List<Ingredient>> IngredientsChanged { get; set; }
+
+    private List<WoolworthsProduct> _searchResults = new();
+    private int _activeSearchIndex = -1;
+    private bool _isSearching;
+    private CancellationTokenSource? _searchCts;
+    private Dictionary<int, decimal> _ingredientPrices = new();
+
+    private decimal _estimatedTotal => _ingredientPrices.Values.Sum();
+
+    private async Task OnIngredientSearchChanged(int index, string value)
+    {
+        Ingredients[index].Name = value;
+
+        if (string.IsNullOrWhiteSpace(value) || value.Length < 2)
+        {
+            _searchResults.Clear();
+            _activeSearchIndex = -1;
+            return;
+        }
+
+        _searchCts?.Cancel();
+        _searchCts = new CancellationTokenSource();
+
+        _activeSearchIndex = index;
+        _isSearching = true;
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(350, _searchCts.Token);
+            _searchResults = await WoolworthsService.SearchProductsAsync(value);
+        }
+        catch (TaskCanceledException) { }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Search error: {ex.Message}");
+            _searchResults.Clear();
+        }
+        finally
+        {
+            _isSearching = false;
+            StateHasChanged();
+        }
+    }
+
+    private void SelectProduct(int index, WoolworthsProduct product)
+    {
+        Ingredients[index].Name = product.Name;
+        _ingredientPrices[index] = product.Price;
+        _searchResults.Clear();
+        _activeSearchIndex = -1;
+        StateHasChanged();
+    }
 
     private async Task AddIngredient()
     {
@@ -61,6 +192,17 @@
         if (Ingredients.Count > 1)
         {
             Ingredients.RemoveAt(index);
+            _ingredientPrices.Remove(index);
+
+            // Re-key prices
+            var newPrices = new Dictionary<int, decimal>();
+            foreach (var kvp in _ingredientPrices)
+            {
+                var newKey = kvp.Key > index ? kvp.Key - 1 : kvp.Key;
+                newPrices[newKey] = kvp.Value;
+            }
+            _ingredientPrices = newPrices;
+
             await IngredientsChanged.InvokeAsync(Ingredients);
         }
     }

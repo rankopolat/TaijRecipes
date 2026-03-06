@@ -37,7 +37,7 @@
                         @onclick="@(() => OnCategorySelected(cat.Id))">
                     @if (!string.IsNullOrEmpty(cat.Icon))
                     {
-                        <span>@cat.Icon</span>
+                        <span class="material-icons" style="font-size: 1rem; vertical-align: middle; margin-right: 0.2rem;">@cat.Icon</span>
                     }
                     @cat.Name
                 </button>

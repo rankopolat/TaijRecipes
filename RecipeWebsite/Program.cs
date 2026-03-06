@@ -35,6 +35,7 @@ builder.Services.AddSingleton<AuthenticationStateProvider>(sp => sp.GetRequiredS
 builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped<WoolworthsService>(sp => new WoolworthsService(sp.GetRequiredService<HttpClient>()));
 
 var host = builder.Build();
 await host.RunAsync();

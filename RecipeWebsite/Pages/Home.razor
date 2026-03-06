@@ -79,14 +79,9 @@
             {
                 <div class="category-card" @onclick="@(() => Navigation.NavigateTo($"recipes?category={cat.Id}"))">
                     <div class="category-card-icon">
-                        @if (!string.IsNullOrEmpty(cat.Icon))
-                        {
-                            @cat.Icon
-                        }
-                        else
-                        {
-                            <MudIcon Icon="@Icons.Material.Filled.Restaurant" Size="Size.Medium" Color="Color.Primary" />
-                        }
+                        <span class="material-icons" style="font-size: 1.5rem; color: #4A7C59;">
+                            @(string.IsNullOrEmpty(cat.Icon) ? "restaurant" : cat.Icon)
+                        </span>
                     </div>
                     <span class="category-card-name">@cat.Name</span>
                 </div>
