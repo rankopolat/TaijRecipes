@@ -1,3 +1,5 @@
+@using RecipeWebsite.Services
+
 <MudThemeProvider Theme="_theme" IsDarkMode="false" />
 <MudPopoverProvider />
 <MudDialogProvider />
@@ -32,6 +34,26 @@
 </CascadingAuthenticationState>
 
 @code {
+    [Inject] private AuthService AuthService { get; set; } = default!;
+
+    private bool _initialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_initialized)
+        {
+            _initialized = true;
+            try
+            {
+                await AuthService.InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Auth init warning: {ex.Message}");
+            }
+        }
+    }
+
     private MudTheme _theme = new()
     {
         PaletteLight = new PaletteLight

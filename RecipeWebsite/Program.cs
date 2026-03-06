@@ -38,11 +38,14 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 var host = builder.Build();
 
-// Initialize Supabase client
-await supabaseService.InitializeAsync();
-
-// Restore auth session from local storage
-var authService = host.Services.GetRequiredService<AuthService>();
-await authService.InitializeAsync();
+// Initialize Supabase client (non-fatal if it fails — pages will retry)
+try
+{
+    await supabaseService.InitializeAsync();
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Supabase init warning: {ex.Message}");
+}
 
 await host.RunAsync();
