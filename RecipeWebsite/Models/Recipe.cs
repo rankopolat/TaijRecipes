@@ -48,14 +48,17 @@ public class Recipe : BaseModel
     [Column("updated_at")]
     public DateTime UpdatedAt { get; set; }
 
-    // Joined fields (not columns)
+    // Joined fields (not columns — must ignore for both serializers)
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public string? CategoryName { get; set; }
 
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public string? AuthorDisplayName { get; set; }
 
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public string? ImageUrl { get; set; }
 }
 
