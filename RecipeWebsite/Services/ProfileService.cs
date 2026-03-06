@@ -13,6 +13,7 @@ public class ProfileService
 
     public async Task<UserProfile?> GetProfileAsync(string userId)
     {
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<UserProfile>()
             .Where(p => p.Id == userId)
             .Get();
@@ -22,6 +23,7 @@ public class ProfileService
 
     public async Task UpdateDisplayNameAsync(string userId, string displayName)
     {
+        await _supabase.EnsureInitializedAsync();
         await _supabase.Client.From<UserProfile>()
             .Where(p => p.Id == userId)
             .Set(p => p.DisplayName, displayName)

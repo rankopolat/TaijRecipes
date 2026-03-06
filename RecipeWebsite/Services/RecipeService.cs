@@ -19,6 +19,7 @@ public class RecipeService
     {
         if (_categoriesCache != null) return _categoriesCache;
 
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<Category>()
             .Order("name", Postgrest.Constants.Ordering.Ascending)
             .Get();
@@ -29,6 +30,7 @@ public class RecipeService
 
     public async Task<List<Recipe>> GetRecentRecipesAsync(int limit = 6)
     {
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<Recipe>()
             .Order("created_at", Postgrest.Constants.Ordering.Descending)
             .Limit(limit)
@@ -41,6 +43,7 @@ public class RecipeService
 
     public async Task<List<Recipe>> SearchRecipesAsync(string? searchTerm = null, int? categoryId = null)
     {
+        await _supabase.EnsureInitializedAsync();
         var table = _supabase.Client.From<Recipe>();
 
         Postgrest.Table<Recipe> query = categoryId.HasValue
@@ -61,6 +64,7 @@ public class RecipeService
 
     public async Task<Recipe?> GetRecipeByIdAsync(int id)
     {
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<Recipe>()
             .Where(r => r.Id == id)
             .Get();
@@ -75,6 +79,7 @@ public class RecipeService
 
     public async Task<List<Recipe>> GetMyRecipesAsync(string userId)
     {
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<Recipe>()
             .Where(r => r.UserId == userId)
             .Order("created_at", Postgrest.Constants.Ordering.Descending)
@@ -87,6 +92,7 @@ public class RecipeService
 
     public async Task<Recipe> CreateRecipeAsync(Recipe recipe)
     {
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<Recipe>().Insert(recipe);
         var created = response.Models.First();
         await EnrichRecipeAsync(created);
@@ -95,6 +101,7 @@ public class RecipeService
 
     public async Task<Recipe> UpdateRecipeAsync(Recipe recipe)
     {
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<Recipe>()
             .Where(r => r.Id == recipe.Id)
             .Set(r => r.Title, recipe.Title)
@@ -115,6 +122,7 @@ public class RecipeService
 
     public async Task DeleteRecipeAsync(int id)
     {
+        await _supabase.EnsureInitializedAsync();
         await _supabase.Client.From<Recipe>()
             .Where(r => r.Id == id)
             .Delete();

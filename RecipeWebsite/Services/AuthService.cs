@@ -2,7 +2,6 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using RecipeWebsite.Models;
 using Supabase.Gotrue;
-using Supabase.Gotrue.Interfaces;
 using System.Security.Claims;
 
 namespace RecipeWebsite.Services;
@@ -26,6 +25,8 @@ public class AuthService : AuthenticationStateProvider
     {
         try
         {
+            await _supabase.EnsureInitializedAsync();
+
             var accessToken = await _localStorage.GetItemAsStringAsync("sb-access-token");
             var refreshToken = await _localStorage.GetItemAsStringAsync("sb-refresh-token");
 
@@ -35,8 +36,9 @@ public class AuthService : AuthenticationStateProvider
                 _currentSession = session;
             }
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine($"Auth restore failed: {ex.Message}");
             await ClearSession();
         }
 
@@ -47,6 +49,7 @@ public class AuthService : AuthenticationStateProvider
     {
         try
         {
+            await _supabase.EnsureInitializedAsync();
             var session = await _supabase.Client.Auth.SignUp(email, password);
             if (session?.User != null)
             {
@@ -78,6 +81,7 @@ public class AuthService : AuthenticationStateProvider
     {
         try
         {
+            await _supabase.EnsureInitializedAsync();
             var session = await _supabase.Client.Auth.SignIn(email, password);
             if (session != null)
             {
@@ -139,7 +143,11 @@ public class AuthService : AuthenticationStateProvider
 
     private async Task ClearSession()
     {
-        await _localStorage.RemoveItemAsync("sb-access-token");
-        await _localStorage.RemoveItemAsync("sb-refresh-token");
+        try
+        {
+            await _localStorage.RemoveItemAsync("sb-access-token");
+            await _localStorage.RemoveItemAsync("sb-refresh-token");
+        }
+        catch { }
     }
 }

@@ -10,7 +10,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Supabase config — replace with your project values
+// Supabase config
 var supabaseUrl = builder.Configuration["Supabase:Url"] ?? "https://YOUR_PROJECT.supabase.co";
 var supabaseKey = builder.Configuration["Supabase:AnonKey"] ?? "YOUR_ANON_KEY";
 
@@ -37,15 +37,4 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var host = builder.Build();
-
-// Initialize Supabase client (non-fatal if it fails — pages will retry)
-try
-{
-    await supabaseService.InitializeAsync();
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Supabase init warning: {ex.Message}");
-}
-
 await host.RunAsync();

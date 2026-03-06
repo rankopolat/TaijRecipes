@@ -13,6 +13,7 @@ public class CommentService
 
     public async Task<List<Comment>> GetCommentsAsync(int recipeId)
     {
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<Comment>()
             .Where(c => c.RecipeId == recipeId)
             .Order("created_at", Postgrest.Constants.Ordering.Ascending)
@@ -40,12 +41,14 @@ public class CommentService
 
     public async Task<Comment> AddCommentAsync(Comment comment)
     {
+        await _supabase.EnsureInitializedAsync();
         var response = await _supabase.Client.From<Comment>().Insert(comment);
         return response.Models.First();
     }
 
     public async Task DeleteCommentAsync(int id)
     {
+        await _supabase.EnsureInitializedAsync();
         await _supabase.Client.From<Comment>()
             .Where(c => c.Id == id)
             .Delete();
