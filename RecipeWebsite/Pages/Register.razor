@@ -1,0 +1,141 @@
+@page "/register"
+@using RecipeWebsite.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Sign Up</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
+    <MudCard Class="pa-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Style="font-family: 'Georgia', serif;">Create Account</MudText>
+            </CardHeaderContent>
+            <CardHeaderAvatar>
+                <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" />
+            </CardHeaderAvatar>
+        </MudCardHeader>
+        <MudCardContent>
+            @if (!string.IsNullOrEmpty(_error))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-4" ShowCloseIcon="true" CloseIconClicked="@(() => _error = null)">
+                    @_error
+                </MudAlert>
+            }
+            @if (!string.IsNullOrEmpty(_success))
+            {
+                <MudAlert Severity="Severity.Success" Class="mb-4">
+                    @_success
+                </MudAlert>
+            }
+
+            <MudTextField @bind-Value="_displayName"
+                          Label="Display Name"
+                          Variant="Variant.Outlined"
+                          Class="mb-4"
+                          Required="true"
+                          Disabled="_loading"
+                          HelperText="This is how your name will appear on recipes" />
+
+            <MudTextField @bind-Value="_email"
+                          Label="Email"
+                          InputType="InputType.Email"
+                          Variant="Variant.Outlined"
+                          Class="mb-4"
+                          Required="true"
+                          Disabled="_loading" />
+
+            <MudTextField @bind-Value="_password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          Variant="Variant.Outlined"
+                          Class="mb-4"
+                          Required="true"
+                          Disabled="_loading"
+                          HelperText="At least 6 characters" />
+
+            <MudTextField @bind-Value="_confirmPassword"
+                          Label="Confirm Password"
+                          InputType="InputType.Password"
+                          Variant="Variant.Outlined"
+                          Class="mb-4"
+                          Required="true"
+                          Disabled="_loading" />
+        </MudCardContent>
+        <MudCardActions Class="d-flex flex-column pa-4">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       Size="Size.Large"
+                       OnClick="HandleRegister"
+                       Disabled="_loading">
+                @if (_loading)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    <MudText Class="ms-2">Creating account...</MudText>
+                }
+                else
+                {
+                    <MudText>Create Account</MudText>
+                }
+            </MudButton>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       Class="mt-2"
+                       OnClick="@(() => Navigation.NavigateTo("/login"))">
+                Already have an account? Sign in
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private string _displayName = "";
+    private string _email = "";
+    private string _password = "";
+    private string _confirmPassword = "";
+    private string? _error;
+    private string? _success;
+    private bool _loading;
+
+    private async Task HandleRegister()
+    {
+        _error = null;
+        _success = null;
+
+        if (string.IsNullOrWhiteSpace(_displayName) || string.IsNullOrWhiteSpace(_email) ||
+            string.IsNullOrWhiteSpace(_password))
+        {
+            _error = "Please fill in all fields.";
+            return;
+        }
+
+        if (_password.Length < 6)
+        {
+            _error = "Password must be at least 6 characters.";
+            return;
+        }
+
+        if (_password != _confirmPassword)
+        {
+            _error = "Passwords don't match.";
+            return;
+        }
+
+        _loading = true;
+
+        var (success, error) = await AuthService.SignUpAsync(_email, _password, _displayName);
+
+        if (success)
+        {
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            _error = error;
+        }
+
+        _loading = false;
+    }
+}

@@ -1,0 +1,77 @@
+<MudThemeProvider Theme="_theme" IsDarkMode="false" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <RecipeWebsite.Pages.Login />
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <MudContainer MaxWidth="MaxWidth.Small" Class="py-8 text-center">
+                    <MudIcon Icon="@Icons.Material.Filled.SearchOff" Size="Size.Large" Color="Color.Tertiary" />
+                    <MudText Typo="Typo.h5" Class="mt-4">Page not found</MudText>
+                    <MudText Typo="Typo.body1" Color="Color.Tertiary" Class="mb-4">
+                        Sorry, there's nothing at this address.
+                    </MudText>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/">
+                        Go Home
+                    </MudButton>
+                </MudContainer>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    private MudTheme _theme = new()
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#C4704A",
+            PrimaryDarken = "#A0522D",
+            PrimaryLighten = "#D4956B",
+            Secondary = "#7A8B69",
+            SecondaryDarken = "#5C6B50",
+            SecondaryLighten = "#9AAB89",
+            Tertiary = "#8B7355",
+            Background = "#FBF7F2",
+            Surface = "#FFFFFF",
+            AppbarBackground = "#C4704A",
+            AppbarText = "#FFFFFF",
+            DrawerBackground = "#FBF7F2",
+            DrawerText = "#4A3728",
+            TextPrimary = "#3E2723",
+            TextSecondary = "#6D4C41",
+            ActionDefault = "#C4704A",
+            ActionDisabled = "#BDB9B3",
+            ActionDisabledBackground = "#E8E4DE",
+            Info = "#5B9BD5",
+            Success = "#7A8B69",
+            Warning = "#D4956B",
+            Error = "#C75050",
+        },
+        Typography = new Typography
+        {
+            Default = new DefaultTypography
+            {
+                FontFamily = new[] { "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif" }
+            },
+            H3 = new H3Typography { FontFamily = new[] { "Georgia", "Times New Roman", "serif" } },
+            H4 = new H4Typography { FontFamily = new[] { "Georgia", "Times New Roman", "serif" } },
+            H5 = new H5Typography { FontFamily = new[] { "Georgia", "Times New Roman", "serif" } },
+        },
+        LayoutProperties = new LayoutProperties
+        {
+            DefaultBorderRadius = "8px"
+        }
+    };
+}

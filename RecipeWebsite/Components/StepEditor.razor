@@ -1,0 +1,59 @@
+@using RecipeWebsite.Models
+
+<div>
+    @for (int i = 0; i < Steps.Count; i++)
+    {
+        var index = i;
+        <MudGrid Class="mb-2">
+            <MudItem xs="1" Class="d-flex align-center justify-center">
+                <MudAvatar Color="Color.Primary" Size="Size.Small">@(index + 1)</MudAvatar>
+            </MudItem>
+            <MudItem xs="10">
+                <MudTextField @bind-Value="Steps[index].Instruction"
+                              Variant="Variant.Outlined"
+                              Placeholder="Describe this step..."
+                              Lines="2"
+                              Margin="Margin.Dense" />
+            </MudItem>
+            <MudItem xs="1" Class="d-flex align-center">
+                <MudIconButton Icon="@Icons.Material.Filled.Close"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="@(() => RemoveStep(index))"
+                               Disabled="Steps.Count <= 1" />
+            </MudItem>
+        </MudGrid>
+    }
+
+    <MudButton Variant="Variant.Outlined"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="AddStep"
+               Size="Size.Small"
+               Class="mt-2">
+        Add Step
+    </MudButton>
+</div>
+
+@code {
+    [Parameter] public List<RecipeStep> Steps { get; set; } = new();
+    [Parameter] public EventCallback<List<RecipeStep>> StepsChanged { get; set; }
+
+    private async Task AddStep()
+    {
+        Steps.Add(new RecipeStep { Number = Steps.Count + 1 });
+        await StepsChanged.InvokeAsync(Steps);
+    }
+
+    private async Task RemoveStep(int index)
+    {
+        if (Steps.Count > 1)
+        {
+            Steps.RemoveAt(index);
+            // Renumber
+            for (int i = 0; i < Steps.Count; i++)
+                Steps[i].Number = i + 1;
+            await StepsChanged.InvokeAsync(Steps);
+        }
+    }
+}

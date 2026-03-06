@@ -1,0 +1,88 @@
+@page "/"
+@using RecipeWebsite.Models
+@using RecipeWebsite.Services
+@inject RecipeService RecipeService
+@inject NavigationManager Navigation
+
+<PageTitle>Family Recipes</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
+    @* Hero Section *@
+    <MudPaper Class="pa-8 mb-8 rounded-lg" Style="background: linear-gradient(135deg, #C4704A 0%, #A0522D 100%); color: white;">
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" sm="8" Class="d-flex flex-column align-center text-center">
+                <MudIcon Icon="@Icons.Material.Filled.RestaurantMenu" Size="Size.Large" Class="mb-4" />
+                <MudText Typo="Typo.h3" Class="mb-2" Style="font-family: 'Georgia', serif; color: white;">
+                    Our Family Recipes
+                </MudText>
+                <MudText Typo="Typo.h6" Class="mb-4" Style="opacity: 0.9; color: white;">
+                    Treasured dishes passed down through generations
+                </MudText>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Surface"
+                           Size="Size.Large"
+                           StartIcon="@Icons.Material.Filled.MenuBook"
+                           OnClick="@(() => Navigation.NavigateTo("/recipes"))">
+                    Browse Recipes
+                </MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    @* Recent Recipes *@
+    <MudText Typo="Typo.h5" Class="mb-4" Style="font-family: 'Georgia', serif;">
+        Recently Added
+    </MudText>
+
+    @if (_loading)
+    {
+        <MudGrid>
+            @for (int i = 0; i < 3; i++)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" Class="rounded-lg mb-2" />
+                    <MudSkeleton Width="60%" />
+                    <MudSkeleton Width="40%" />
+                </MudItem>
+            }
+        </MudGrid>
+    }
+    else if (_recipes.Any())
+    {
+        <MudGrid>
+            @foreach (var recipe in _recipes)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <RecipeWebsite.Components.RecipeCard Recipe="recipe" />
+                </MudItem>
+            }
+        </MudGrid>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Info" Class="my-4">
+            No recipes yet! Be the first to add one.
+        </MudAlert>
+    }
+</MudContainer>
+
+@code {
+    private List<Recipe> _recipes = new();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _recipes = await RecipeService.GetRecentRecipesAsync(6);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading recipes: {ex.Message}");
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

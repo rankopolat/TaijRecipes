@@ -1,0 +1,67 @@
+@using RecipeWebsite.Models
+
+<div>
+    @for (int i = 0; i < Ingredients.Count; i++)
+    {
+        var index = i;
+        <MudGrid Class="mb-2">
+            <MudItem xs="3" sm="2">
+                <MudTextField @bind-Value="Ingredients[index].Amount"
+                              Label="@(index == 0 ? "Amount" : "")"
+                              Variant="Variant.Outlined"
+                              Placeholder="2"
+                              Margin="Margin.Dense" />
+            </MudItem>
+            <MudItem xs="3" sm="2">
+                <MudTextField @bind-Value="Ingredients[index].Unit"
+                              Label="@(index == 0 ? "Unit" : "")"
+                              Variant="Variant.Outlined"
+                              Placeholder="cups"
+                              Margin="Margin.Dense" />
+            </MudItem>
+            <MudItem xs="5" sm="7">
+                <MudTextField @bind-Value="Ingredients[index].Name"
+                              Label="@(index == 0 ? "Ingredient" : "")"
+                              Variant="Variant.Outlined"
+                              Placeholder="flour"
+                              Margin="Margin.Dense" />
+            </MudItem>
+            <MudItem xs="1" Class="d-flex align-end">
+                <MudIconButton Icon="@Icons.Material.Filled.Close"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="@(() => RemoveIngredient(index))"
+                               Disabled="Ingredients.Count <= 1" />
+            </MudItem>
+        </MudGrid>
+    }
+
+    <MudButton Variant="Variant.Outlined"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Add"
+               OnClick="AddIngredient"
+               Size="Size.Small"
+               Class="mt-2">
+        Add Ingredient
+    </MudButton>
+</div>
+
+@code {
+    [Parameter] public List<Ingredient> Ingredients { get; set; } = new();
+    [Parameter] public EventCallback<List<Ingredient>> IngredientsChanged { get; set; }
+
+    private async Task AddIngredient()
+    {
+        Ingredients.Add(new Ingredient());
+        await IngredientsChanged.InvokeAsync(Ingredients);
+    }
+
+    private async Task RemoveIngredient(int index)
+    {
+        if (Ingredients.Count > 1)
+        {
+            Ingredients.RemoveAt(index);
+            await IngredientsChanged.InvokeAsync(Ingredients);
+        }
+    }
+}

@@ -1,0 +1,128 @@
+/* Base styles */
+html, body {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #FBF7F2;
+    margin: 0;
+    padding: 0;
+}
+
+h1:focus {
+    outline: none;
+}
+
+/* Recipe card hover effect */
+.recipe-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recipe-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Blazor error UI */
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.blazor-error-boundary {
+    background: #b32121;
+    padding: 1rem;
+    color: white;
+    border-radius: 8px;
+}
+
+.blazor-error-boundary::after {
+    content: "An error has occurred.";
+}
+
+/* Loading spinner */
+.loading-progress {
+    position: relative;
+    display: block;
+    width: 5rem;
+    height: 5rem;
+    margin: 0 auto;
+}
+
+.loading-progress circle {
+    fill: none;
+    stroke: #e8e4de;
+    stroke-width: 0.6rem;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+}
+
+.loading-progress circle:last-child {
+    stroke: #C4704A;
+    stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+    transition: stroke-dasharray 0.05s ease-in-out;
+}
+
+/* Print styles */
+@media print {
+    .no-print,
+    .mud-appbar,
+    .mud-drawer,
+    .mud-snackbar-provider,
+    .mud-popover-provider,
+    #blazor-error-ui,
+    button,
+    .mud-chip,
+    .mud-button {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 12pt;
+    }
+
+    .mud-main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .mud-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .mud-paper {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    .mud-image {
+        max-height: 300px !important;
+        page-break-inside: avoid;
+    }
+
+    .mud-timeline-item {
+        page-break-inside: avoid;
+    }
+
+    .mud-table {
+        page-break-inside: avoid;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+}

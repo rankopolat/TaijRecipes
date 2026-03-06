@@ -1,0 +1,136 @@
+@page "/my-recipes"
+@using RecipeWebsite.Models
+@using RecipeWebsite.Services
+@attribute [Authorize]
+@inject RecipeService RecipeService
+@inject StorageService StorageService
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<PageTitle>My Recipes</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-6">
+    <div class="d-flex justify-space-between align-center mb-4">
+        <MudText Typo="Typo.h4" Style="font-family: 'Georgia', serif;">My Recipes</MudText>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="@(() => Navigation.NavigateTo("/recipe/new"))">
+            Add Recipe
+        </MudButton>
+    </div>
+
+    @if (_loading)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    }
+    else if (_recipes.Any())
+    {
+        <MudGrid>
+            @foreach (var recipe in _recipes)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudCard Class="recipe-card" Elevation="2">
+                        @if (!string.IsNullOrEmpty(recipe.ImageUrl))
+                        {
+                            <MudCardMedia Image="@recipe.ImageUrl" Height="180"
+                                          Style="cursor: pointer;"
+                                          @onclick="@(() => Navigation.NavigateTo($"/recipe/{recipe.Id}"))" />
+                        }
+                        else
+                        {
+                            <MudCardMedia Image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='180'%3E%3Crect fill='%23f5f0eb' width='400' height='180'/%3E%3Ctext fill='%23c4704a' font-size='48' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3E🍽%3C/text%3E%3C/svg%3E"
+                                          Height="180"
+                                          Style="cursor: pointer;"
+                                          @onclick="@(() => Navigation.NavigateTo($"/recipe/{recipe.Id}"))" />
+                        }
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6">@recipe.Title</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Tertiary">
+                                @(recipe.CategoryName ?? "Uncategorized") · @recipe.CreatedAt.ToString("MMM dd, yyyy")
+                            </MudText>
+                        </MudCardContent>
+                        <MudCardActions>
+                            <MudButton Variant="Variant.Text" Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.Edit"
+                                       OnClick="@(() => Navigation.NavigateTo($"/recipe/edit/{recipe.Id}"))">
+                                Edit
+                            </MudButton>
+                            <MudSpacer />
+                            <MudButton Variant="Variant.Text" Color="Color.Error"
+                                       StartIcon="@Icons.Material.Filled.Delete"
+                                       OnClick="@(() => ConfirmDelete(recipe))">
+                                Delete
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Info" Class="my-4">
+            You haven't added any recipes yet.
+            <MudLink Href="/recipe/new" Color="Color.Primary">Add your first recipe!</MudLink>
+        </MudAlert>
+    }
+</MudContainer>
+
+@code {
+    private List<Recipe> _recipes = new();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRecipes();
+    }
+
+    private async Task LoadRecipes()
+    {
+        _loading = true;
+        try
+        {
+            if (AuthService.CurrentUserId != null)
+            {
+                _recipes = await RecipeService.GetMyRecipesAsync(AuthService.CurrentUserId);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error loading recipes: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task ConfirmDelete(Recipe recipe)
+    {
+        var parameters = new DialogParameters<ConfirmDeleteDialog>
+        {
+            { x => x.RecipeTitle, recipe.Title }
+        };
+
+        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>("Delete Recipe", parameters);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            try
+            {
+                await StorageService.DeleteImageAsync(recipe.ImagePath);
+                await RecipeService.DeleteRecipeAsync(recipe.Id);
+                Snackbar.Add("Recipe deleted.", Severity.Success);
+                await LoadRecipes();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error deleting recipe: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+}

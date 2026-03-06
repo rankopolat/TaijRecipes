@@ -1,0 +1,168 @@
+@page "/recipe/{Id:int}"
+@using RecipeWebsite.Models
+@using RecipeWebsite.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@inject RecipeService RecipeService
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>@(_recipe?.Title ?? "Recipe")</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="py-6">
+    @if (_loading)
+    {
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="300px" Class="rounded-lg mb-4" />
+        <MudSkeleton SkeletonType="SkeletonType.Text" Width="60%" Height="40px" Class="mb-2" />
+        <MudSkeleton SkeletonType="SkeletonType.Text" Width="40%" />
+    }
+    else if (_recipe == null)
+    {
+        <MudAlert Severity="Severity.Warning">Recipe not found.</MudAlert>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Navigation.NavigateTo("/recipes"))"
+                   StartIcon="@Icons.Material.Filled.ArrowBack" Class="mt-2">
+            Back to Recipes
+        </MudButton>
+    }
+    else
+    {
+        @* Print Button *@
+        <div class="d-flex justify-end no-print mb-2">
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Print"
+                       OnClick="PrintRecipe" Size="Size.Small">
+                Print Recipe
+            </MudButton>
+        </div>
+
+        @* Recipe Image *@
+        @if (!string.IsNullOrEmpty(_recipe.ImageUrl))
+        {
+            <MudImage Src="@_recipe.ImageUrl"
+                      Alt="@_recipe.Title"
+                      ObjectFit="ObjectFit.Cover"
+                      Height="350"
+                      Class="rounded-lg mb-4"
+                      Style="width: 100%;" />
+        }
+
+        @* Title & Meta *@
+        <MudText Typo="Typo.h4" Class="mb-2" Style="font-family: 'Georgia', serif;">
+            @_recipe.Title
+        </MudText>
+
+        <div class="d-flex flex-wrap gap-2 mb-4 align-center">
+            @if (!string.IsNullOrEmpty(_recipe.CategoryName))
+            {
+                <MudChip T="string" Color="Color.Primary" Size="Size.Small">@_recipe.CategoryName</MudChip>
+            }
+            <MudChip T="string" Color="Color.Default" Size="Size.Small" Icon="@Icons.Material.Filled.Person">
+                @_recipe.AuthorDisplayName
+            </MudChip>
+            @if (_recipe.PrepTimeMinutes.HasValue)
+            {
+                <MudChip T="string" Color="Color.Info" Size="Size.Small" Icon="@Icons.Material.Filled.Timer">
+                    Prep: @_recipe.PrepTimeMinutes min
+                </MudChip>
+            }
+            @if (_recipe.CookTimeMinutes.HasValue)
+            {
+                <MudChip T="string" Color="Color.Warning" Size="Size.Small" Icon="@Icons.Material.Filled.LocalFireDepartment">
+                    Cook: @_recipe.CookTimeMinutes min
+                </MudChip>
+            }
+            @if (_recipe.Servings.HasValue)
+            {
+                <MudChip T="string" Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Filled.People">
+                    Serves @_recipe.Servings
+                </MudChip>
+            }
+        </div>
+
+        @if (!string.IsNullOrEmpty(_recipe.Description))
+        {
+            <MudText Typo="Typo.body1" Class="mb-6" Style="font-style: italic; color: #666;">
+                @_recipe.Description
+            </MudText>
+        }
+
+        <MudDivider Class="mb-6" />
+
+        @* Ingredients *@
+        <MudText Typo="Typo.h5" Class="mb-3" Style="font-family: 'Georgia', serif;">
+            <MudIcon Icon="@Icons.Material.Filled.ShoppingCart" Class="mr-1" /> Ingredients
+        </MudText>
+
+        <MudSimpleTable Dense="true" Hover="true" Bordered="false" Class="mb-6">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Unit</th>
+                    <th>Ingredient</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ing in _recipe.Ingredients)
+                {
+                    <tr>
+                        <td>@ing.Amount</td>
+                        <td>@ing.Unit</td>
+                        <td><strong>@ing.Name</strong></td>
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
+        <MudDivider Class="mb-6" />
+
+        @* Steps *@
+        <MudText Typo="Typo.h5" Class="mb-3" Style="font-family: 'Georgia', serif;">
+            <MudIcon Icon="@Icons.Material.Filled.FormatListNumbered" Class="mr-1" /> Instructions
+        </MudText>
+
+        <MudTimeline TimelinePosition="TimelinePosition.Start" Class="mb-6">
+            @foreach (var step in _recipe.Steps.OrderBy(s => s.Number))
+            {
+                <MudTimelineItem Color="Color.Primary" Size="Size.Small">
+                    <ItemContent>
+                        <MudText Typo="Typo.subtitle2" Color="Color.Primary">Step @step.Number</MudText>
+                        <MudText Typo="Typo.body1">@step.Instruction</MudText>
+                    </ItemContent>
+                </MudTimelineItem>
+            }
+        </MudTimeline>
+
+        <MudDivider Class="mb-6" />
+
+        @* Comments *@
+        <RecipeWebsite.Components.CommentSection RecipeId="@Id" />
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private Recipe? _recipe;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _recipe = await RecipeService.GetRecipeByIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading recipe: {ex.Message}");
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private async Task PrintRecipe()
+    {
+        await JS.InvokeVoidAsync("window.print");
+    }
+}

@@ -1,0 +1,100 @@
+@page "/login"
+@using RecipeWebsite.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Sign In</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
+    <MudCard Class="pa-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Style="font-family: 'Georgia', serif;">Sign In</MudText>
+            </CardHeaderContent>
+            <CardHeaderAvatar>
+                <MudIcon Icon="@Icons.Material.Filled.Login" Color="Color.Primary" />
+            </CardHeaderAvatar>
+        </MudCardHeader>
+        <MudCardContent>
+            @if (!string.IsNullOrEmpty(_error))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-4" ShowCloseIcon="true" CloseIconClicked="@(() => _error = null)">
+                    @_error
+                </MudAlert>
+            }
+
+            <MudTextField @bind-Value="_email"
+                          Label="Email"
+                          InputType="InputType.Email"
+                          Variant="Variant.Outlined"
+                          Class="mb-4"
+                          Required="true"
+                          Disabled="_loading" />
+
+            <MudTextField @bind-Value="_password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          Variant="Variant.Outlined"
+                          Class="mb-4"
+                          Required="true"
+                          Disabled="_loading" />
+        </MudCardContent>
+        <MudCardActions Class="d-flex flex-column pa-4">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       Size="Size.Large"
+                       OnClick="HandleLogin"
+                       Disabled="_loading">
+                @if (_loading)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    <MudText Class="ms-2">Signing in...</MudText>
+                }
+                else
+                {
+                    <MudText>Sign In</MudText>
+                }
+            </MudButton>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Primary"
+                       FullWidth="true"
+                       Class="mt-2"
+                       OnClick="@(() => Navigation.NavigateTo("/register"))">
+                Don't have an account? Sign up
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private string _email = "";
+    private string _password = "";
+    private string? _error;
+    private bool _loading;
+
+    private async Task HandleLogin()
+    {
+        if (string.IsNullOrWhiteSpace(_email) || string.IsNullOrWhiteSpace(_password))
+        {
+            _error = "Please enter both email and password.";
+            return;
+        }
+
+        _loading = true;
+        _error = null;
+
+        var (success, error) = await AuthService.SignInAsync(_email, _password);
+
+        if (success)
+        {
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            _error = error;
+        }
+
+        _loading = false;
+    }
+}

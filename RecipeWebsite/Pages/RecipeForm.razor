@@ -1,0 +1,258 @@
+@page "/recipe/new"
+@page "/recipe/edit/{Id:int}"
+@using RecipeWebsite.Models
+@using RecipeWebsite.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@inject RecipeService RecipeService
+@inject StorageService StorageService
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<PageTitle>@(_isEdit ? "Edit Recipe" : "Add New Recipe")</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="py-6">
+    <MudText Typo="Typo.h4" Class="mb-4" Style="font-family: 'Georgia', serif;">
+        <MudIcon Icon="@(_isEdit ? Icons.Material.Filled.Edit : Icons.Material.Filled.Add)" Class="mr-2" />
+        @(_isEdit ? "Edit Recipe" : "Add New Recipe")
+    </MudText>
+
+    @if (_loading)
+    {
+        <MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+    }
+    else
+    {
+        <MudCard Class="pa-4">
+            <MudCardContent>
+                @* Basic Info *@
+                <MudText Typo="Typo.h6" Class="mb-3">Basic Information</MudText>
+
+                <MudTextField @bind-Value="_recipe.Title"
+                              Label="Recipe Title"
+                              Variant="Variant.Outlined"
+                              Class="mb-3"
+                              Required="true"
+                              Placeholder="e.g., Grandma's Apple Pie" />
+
+                <MudTextField @bind-Value="_recipe.Description"
+                              Label="Description"
+                              Variant="Variant.Outlined"
+                              Class="mb-3"
+                              Lines="3"
+                              Placeholder="A short description of this recipe..." />
+
+                <MudGrid Class="mb-4">
+                    <MudItem xs="12" sm="6">
+                        <MudSelect @bind-Value="_recipe.CategoryId"
+                                   Label="Category"
+                                   Variant="Variant.Outlined"
+                                   Clearable="true">
+                            @foreach (var cat in _categories)
+                            {
+                                <MudSelectItem Value="@((int?)cat.Id)">@cat.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="4" sm="2">
+                        <MudNumericField @bind-Value="_recipe.PrepTimeMinutes"
+                                         Label="Prep (min)"
+                                         Variant="Variant.Outlined"
+                                         Min="0" />
+                    </MudItem>
+                    <MudItem xs="4" sm="2">
+                        <MudNumericField @bind-Value="_recipe.CookTimeMinutes"
+                                         Label="Cook (min)"
+                                         Variant="Variant.Outlined"
+                                         Min="0" />
+                    </MudItem>
+                    <MudItem xs="4" sm="2">
+                        <MudNumericField @bind-Value="_recipe.Servings"
+                                         Label="Servings"
+                                         Variant="Variant.Outlined"
+                                         Min="1" />
+                    </MudItem>
+                </MudGrid>
+
+                <MudDivider Class="my-4" />
+
+                @* Image Upload *@
+                <MudText Typo="Typo.h6" Class="mb-3">Photo</MudText>
+                <RecipeWebsite.Components.ImageUpload ImagePath="@_recipe.ImagePath"
+                                                      ImageUrl="@_imagePreviewUrl"
+                                                      OnImageSelected="HandleImageSelected"
+                                                      OnImageRemoved="HandleImageRemoved" />
+
+                <MudDivider Class="my-4" />
+
+                @* Ingredients *@
+                <MudText Typo="Typo.h6" Class="mb-3">Ingredients</MudText>
+                <RecipeWebsite.Components.IngredientEditor @bind-Ingredients="_recipe.Ingredients" />
+
+                <MudDivider Class="my-4" />
+
+                @* Steps *@
+                <MudText Typo="Typo.h6" Class="mb-3">Instructions</MudText>
+                <RecipeWebsite.Components.StepEditor @bind-Steps="_recipe.Steps" />
+            </MudCardContent>
+
+            <MudCardActions Class="pa-4">
+                <MudButton Variant="Variant.Text"
+                           OnClick="@(() => Navigation.NavigateTo(_isEdit ? $"/recipe/{Id}" : "/recipes"))">
+                    Cancel
+                </MudButton>
+                <MudSpacer />
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           OnClick="SaveRecipe"
+                           Disabled="_saving"
+                           StartIcon="@Icons.Material.Filled.Save">
+                    @if (_saving)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <MudText Class="ms-2">Saving...</MudText>
+                    }
+                    else
+                    {
+                        <MudText>@(_isEdit ? "Update Recipe" : "Save Recipe")</MudText>
+                    }
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    }
+</MudContainer>
+
+@code {
+    [Parameter] public int? Id { get; set; }
+
+    private Recipe _recipe = new();
+    private List<Category> _categories = new();
+    private bool _isEdit => Id.HasValue;
+    private bool _loading = true;
+    private bool _saving;
+    private IBrowserFile? _selectedImage;
+    private string? _imagePreviewUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _categories = await RecipeService.GetCategoriesAsync();
+
+        if (_isEdit)
+        {
+            var recipe = await RecipeService.GetRecipeByIdAsync(Id!.Value);
+            if (recipe != null)
+            {
+                // Check ownership
+                if (recipe.UserId != AuthService.CurrentUserId)
+                {
+                    Snackbar.Add("You can only edit your own recipes.", Severity.Error);
+                    Navigation.NavigateTo($"/recipe/{Id}");
+                    return;
+                }
+                _recipe = recipe;
+                _imagePreviewUrl = recipe.ImageUrl;
+            }
+            else
+            {
+                Snackbar.Add("Recipe not found.", Severity.Error);
+                Navigation.NavigateTo("/recipes");
+                return;
+            }
+        }
+        else
+        {
+            _recipe.Ingredients.Add(new Ingredient());
+            _recipe.Steps.Add(new RecipeStep { Number = 1 });
+        }
+
+        _loading = false;
+    }
+
+    private void HandleImageSelected((IBrowserFile File, string PreviewUrl) args)
+    {
+        _selectedImage = args.File;
+        _imagePreviewUrl = args.PreviewUrl;
+    }
+
+    private void HandleImageRemoved()
+    {
+        _selectedImage = null;
+        _imagePreviewUrl = null;
+        _recipe.ImagePath = null;
+    }
+
+    private async Task SaveRecipe()
+    {
+        if (string.IsNullOrWhiteSpace(_recipe.Title))
+        {
+            Snackbar.Add("Please enter a recipe title.", Severity.Warning);
+            return;
+        }
+
+        if (!_recipe.Ingredients.Any(i => !string.IsNullOrWhiteSpace(i.Name)))
+        {
+            Snackbar.Add("Please add at least one ingredient.", Severity.Warning);
+            return;
+        }
+
+        if (!_recipe.Steps.Any(s => !string.IsNullOrWhiteSpace(s.Instruction)))
+        {
+            Snackbar.Add("Please add at least one step.", Severity.Warning);
+            return;
+        }
+
+        _saving = true;
+
+        try
+        {
+            // Clean up empty entries
+            _recipe.Ingredients = _recipe.Ingredients
+                .Where(i => !string.IsNullOrWhiteSpace(i.Name))
+                .ToList();
+            _recipe.Steps = _recipe.Steps
+                .Where(s => !string.IsNullOrWhiteSpace(s.Instruction))
+                .Select((s, i) => new RecipeStep { Number = i + 1, Instruction = s.Instruction })
+                .ToList();
+
+            // Upload image if selected
+            if (_selectedImage != null)
+            {
+                using var stream = _selectedImage.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+                var imagePath = await StorageService.UploadImageAsync(stream, _selectedImage.Name);
+                if (imagePath != null)
+                {
+                    // Delete old image if replacing
+                    if (_isEdit && !string.IsNullOrEmpty(_recipe.ImagePath))
+                    {
+                        await StorageService.DeleteImageAsync(_recipe.ImagePath);
+                    }
+                    _recipe.ImagePath = imagePath;
+                }
+            }
+
+            if (_isEdit)
+            {
+                await RecipeService.UpdateRecipeAsync(_recipe);
+                Snackbar.Add("Recipe updated!", Severity.Success);
+                Navigation.NavigateTo($"/recipe/{Id}");
+            }
+            else
+            {
+                _recipe.UserId = AuthService.CurrentUserId;
+                var created = await RecipeService.CreateRecipeAsync(_recipe);
+                Snackbar.Add("Recipe saved!", Severity.Success);
+                Navigation.NavigateTo($"/recipe/{created.Id}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error saving recipe: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}

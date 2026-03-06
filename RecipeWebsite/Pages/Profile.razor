@@ -1,0 +1,94 @@
+@page "/profile"
+@using RecipeWebsite.Models
+@using RecipeWebsite.Services
+@attribute [Authorize]
+@inject ProfileService ProfileService
+@inject AuthService AuthService
+@inject ISnackbar Snackbar
+
+<PageTitle>Profile</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-8">
+    <MudCard Class="pa-4">
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5" Style="font-family: 'Georgia', serif;">My Profile</MudText>
+            </CardHeaderContent>
+            <CardHeaderAvatar>
+                <MudAvatar Color="Color.Primary" Size="Size.Large">
+                    @(_displayName?.FirstOrDefault())
+                </MudAvatar>
+            </CardHeaderAvatar>
+        </MudCardHeader>
+        <MudCardContent>
+            @if (_loading)
+            {
+                <MudSkeleton Width="100%" Height="56px" Class="mb-4" />
+            }
+            else
+            {
+                <MudTextField @bind-Value="_displayName"
+                              Label="Display Name"
+                              Variant="Variant.Outlined"
+                              Class="mb-4"
+                              HelperText="This name will appear on your recipes and comments" />
+            }
+        </MudCardContent>
+        <MudCardActions Class="pa-4">
+            <MudSpacer />
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="SaveProfile"
+                       Disabled="_saving"
+                       StartIcon="@Icons.Material.Filled.Save">
+                @(_saving ? "Saving..." : "Save Changes")
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private string _displayName = "";
+    private bool _loading = true;
+    private bool _saving;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthService.CurrentUserId != null)
+        {
+            var profile = await ProfileService.GetProfileAsync(AuthService.CurrentUserId);
+            if (profile != null)
+            {
+                _displayName = profile.DisplayName;
+            }
+        }
+        _loading = false;
+    }
+
+    private async Task SaveProfile()
+    {
+        if (string.IsNullOrWhiteSpace(_displayName))
+        {
+            Snackbar.Add("Display name cannot be empty.", Severity.Warning);
+            return;
+        }
+
+        _saving = true;
+        try
+        {
+            if (AuthService.CurrentUserId != null)
+            {
+                await ProfileService.UpdateDisplayNameAsync(AuthService.CurrentUserId, _displayName);
+                Snackbar.Add("Profile updated!", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            _saving = false;
+        }
+    }
+}
