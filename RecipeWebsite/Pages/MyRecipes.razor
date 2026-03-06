@@ -13,7 +13,7 @@
 @if (!AuthService.IsAuthenticated)
 {
     <MudContainer MaxWidth="MaxWidth.Small" Class="py-8 text-center">
-        <MudAlert Severity="Severity.Info">Please <MudLink Href="/login">sign in</MudLink> to view your recipes.</MudAlert>
+        <MudAlert Severity="Severity.Info">Please <MudLink Href="login">sign in</MudLink> to view your recipes.</MudAlert>
     </MudContainer>
     return;
 }
@@ -24,7 +24,7 @@
         <MudButton Variant="Variant.Filled"
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.Add"
-                   OnClick="@(() => Navigation.NavigateTo("/recipe/new"))">
+                   OnClick="@(() => Navigation.NavigateTo("recipe/new"))">
             Add Recipe
         </MudButton>
     </div>
@@ -44,14 +44,14 @@
                         {
                             <MudCardMedia Image="@recipe.ImageUrl" Height="180"
                                           Style="cursor: pointer;"
-                                          @onclick="@(() => Navigation.NavigateTo($"/recipe/{recipe.Id}"))" />
+                                          @onclick="@(() => Navigation.NavigateTo($"recipe/{recipe.Id}"))" />
                         }
                         else
                         {
                             <MudCardMedia Image="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='180'%3E%3Crect fill='%23f5f0eb' width='400' height='180'/%3E%3Ctext fill='%23c4704a' font-size='48' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3E🍽%3C/text%3E%3C/svg%3E"
                                           Height="180"
                                           Style="cursor: pointer;"
-                                          @onclick="@(() => Navigation.NavigateTo($"/recipe/{recipe.Id}"))" />
+                                          @onclick="@(() => Navigation.NavigateTo($"recipe/{recipe.Id}"))" />
                         }
                         <MudCardContent>
                             <MudText Typo="Typo.h6">@recipe.Title</MudText>
@@ -62,7 +62,7 @@
                         <MudCardActions>
                             <MudButton Variant="Variant.Text" Color="Color.Primary"
                                        StartIcon="@Icons.Material.Filled.Edit"
-                                       OnClick="@(() => Navigation.NavigateTo($"/recipe/edit/{recipe.Id}"))">
+                                       OnClick="@(() => Navigation.NavigateTo($"recipe/edit/{recipe.Id}"))">
                                 Edit
                             </MudButton>
                             <MudSpacer />
@@ -81,7 +81,7 @@
     {
         <MudAlert Severity="Severity.Info" Class="my-4">
             You haven't added any recipes yet.
-            <MudLink Href="/recipe/new" Color="Color.Primary">Add your first recipe!</MudLink>
+            <MudLink Href="recipe/new" Color="Color.Primary">Add your first recipe!</MudLink>
         </MudAlert>
     }
 </MudContainer>

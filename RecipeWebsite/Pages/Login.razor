@@ -60,7 +60,7 @@
                        Color="Color.Primary"
                        FullWidth="true"
                        Class="mt-2"
-                       OnClick="@(() => Navigation.NavigateTo("/register"))">
+                       OnClick="@(() => Navigation.NavigateTo("register"))">
                 Don't have an account? Sign up
             </MudButton>
         </MudCardActions>
@@ -88,7 +88,7 @@
 
         if (success)
         {
-            Navigation.NavigateTo("/");
+            Navigation.NavigateTo("");
         }
         else
         {

@@ -13,7 +13,7 @@
 @if (!AuthService.IsAuthenticated)
 {
     <MudContainer MaxWidth="MaxWidth.Small" Class="py-8 text-center">
-        <MudAlert Severity="Severity.Info">Please <MudLink Href="/login">sign in</MudLink> to add recipes.</MudAlert>
+        <MudAlert Severity="Severity.Info">Please <MudLink Href="login">sign in</MudLink> to add recipes.</MudAlert>
     </MudContainer>
     return;
 }
@@ -105,7 +105,7 @@
 
             <MudCardActions Class="pa-4">
                 <MudButton Variant="Variant.Text"
-                           OnClick="@(() => Navigation.NavigateTo(_isEdit ? $"/recipe/{Id}" : "/recipes"))">
+                           OnClick="@(() => Navigation.NavigateTo(_isEdit ? $"recipe/{Id}" : "recipes"))">
                     Cancel
                 </MudButton>
                 <MudSpacer />
@@ -154,7 +154,7 @@
                 if (recipe.UserId != AuthService.CurrentUserId)
                 {
                     Snackbar.Add("You can only edit your own recipes.", Severity.Error);
-                    Navigation.NavigateTo($"/recipe/{Id}");
+                    Navigation.NavigateTo($"recipe/{Id}");
                     return;
                 }
                 _recipe = recipe;
@@ -163,7 +163,7 @@
             else
             {
                 Snackbar.Add("Recipe not found.", Severity.Error);
-                Navigation.NavigateTo("/recipes");
+                Navigation.NavigateTo("recipes");
                 return;
             }
         }
@@ -249,7 +249,7 @@
                 _recipe.UserId = AuthService.CurrentUserId;
                 var created = await RecipeService.CreateRecipeAsync(_recipe);
                 Snackbar.Add("Recipe saved!", Severity.Success);
-                Navigation.NavigateTo($"/recipe/{created.Id}");
+                Navigation.NavigateTo($"recipe/{created.Id}");
             }
         }
         catch (Exception ex)

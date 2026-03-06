@@ -2,7 +2,7 @@
 @inject NavigationManager Navigation
 
 <MudCard Class="recipe-card" Elevation="2" Style="cursor: pointer; height: 100%;"
-         @onclick="@(() => Navigation.NavigateTo($"/recipe/{Recipe.Id}"))">
+         @onclick="@(() => Navigation.NavigateTo($"recipe/{Recipe.Id}"))">
     @if (!string.IsNullOrEmpty(Recipe.ImageUrl))
     {
         <MudCardMedia Image="@Recipe.ImageUrl" Height="200" />

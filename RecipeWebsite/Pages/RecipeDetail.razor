@@ -19,7 +19,7 @@
     else if (_recipe == null)
     {
         <MudAlert Severity="Severity.Warning">Recipe not found.</MudAlert>
-        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Navigation.NavigateTo("/recipes"))"
+        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Navigation.NavigateTo("recipes"))"
                    StartIcon="@Icons.Material.Filled.ArrowBack" Class="mt-2">
             Back to Recipes
         </MudButton>

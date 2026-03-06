@@ -1,11 +1,11 @@
 @using RecipeWebsite.Services
 
 <MudNavMenu Class="py-2">
-    <MudNavLink Href="/" Match="NavLinkMatch.All"
+    <MudNavLink Href="" Match="NavLinkMatch.All"
                 Icon="@Icons.Material.Filled.Home">
         Home
     </MudNavLink>
-    <MudNavLink Href="/recipes" Match="NavLinkMatch.Prefix"
+    <MudNavLink Href="recipes" Match="NavLinkMatch.Prefix"
                 Icon="@Icons.Material.Filled.MenuBook">
         Browse Recipes
     </MudNavLink>
@@ -13,15 +13,15 @@
     <AuthorizeView>
         <Authorized>
             <MudDivider Class="my-2" />
-            <MudNavLink Href="/recipe/new" Match="NavLinkMatch.All"
+            <MudNavLink Href="recipe/new" Match="NavLinkMatch.All"
                         Icon="@Icons.Material.Filled.AddCircle">
                 Add Recipe
             </MudNavLink>
-            <MudNavLink Href="/my-recipes" Match="NavLinkMatch.All"
+            <MudNavLink Href="my-recipes" Match="NavLinkMatch.All"
                         Icon="@Icons.Material.Filled.Favorite">
                 My Recipes
             </MudNavLink>
-            <MudNavLink Href="/profile" Match="NavLinkMatch.All"
+            <MudNavLink Href="profile" Match="NavLinkMatch.All"
                         Icon="@Icons.Material.Filled.Person">
                 Profile
             </MudNavLink>

@@ -10,7 +10,7 @@
                        Edge="Edge.Start"
                        OnClick="@ToggleDrawer" />
         <MudText Typo="Typo.h6" Style="font-family: 'Georgia', serif; cursor: pointer;"
-                 @onclick="@(() => Navigation.NavigateTo("/"))">
+                 @onclick="@(() => Navigation.NavigateTo(""))">
             Family Recipes
         </MudText>
         <MudSpacer />
@@ -19,16 +19,16 @@
             <Authorized>
                 <MudButton Variant="Variant.Text" Color="Color.Inherit"
                            StartIcon="@Icons.Material.Filled.Add"
-                           OnClick="@(() => Navigation.NavigateTo("/recipe/new"))"
+                           OnClick="@(() => Navigation.NavigateTo("recipe/new"))"
                            Class="d-none d-sm-flex">
                     Add Recipe
                 </MudButton>
                 <MudMenu Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit">
-                    <MudMenuItem OnClick="@(() => Navigation.NavigateTo("/my-recipes"))"
+                    <MudMenuItem OnClick="@(() => Navigation.NavigateTo("my-recipes"))"
                                  Icon="@Icons.Material.Filled.MenuBook">
                         My Recipes
                     </MudMenuItem>
-                    <MudMenuItem OnClick="@(() => Navigation.NavigateTo("/profile"))"
+                    <MudMenuItem OnClick="@(() => Navigation.NavigateTo("profile"))"
                                  Icon="@Icons.Material.Filled.Person">
                         Profile
                     </MudMenuItem>
@@ -41,7 +41,7 @@
             </Authorized>
             <NotAuthorized>
                 <MudButton Variant="Variant.Text" Color="Color.Inherit"
-                           OnClick="@(() => Navigation.NavigateTo("/login"))">
+                           OnClick="@(() => Navigation.NavigateTo("login"))">
                     Sign In
                 </MudButton>
             </NotAuthorized>
@@ -68,6 +68,6 @@
     private async Task HandleSignOut()
     {
         await AuthService.SignOutAsync();
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo("");
     }
 }
