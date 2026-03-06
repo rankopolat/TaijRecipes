@@ -85,9 +85,14 @@
     }
     else
     {
-        <MudAlert Severity="Severity.Info" Class="my-4">
-            No recipes found. Try a different search or category.
-        </MudAlert>
+        <MudPaper Class="pa-8 text-center my-4" Elevation="0" Style="background: transparent;">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 0.75rem;">
+                <circle cx="28" cy="28" r="26" fill="#4A7C59" opacity="0.06"/>
+                <circle cx="24" cy="24" r="12" fill="none" stroke="#4A7C59" stroke-width="1.5" opacity="0.18"/>
+                <path d="M33 33 L40 40" stroke="#4A7C59" stroke-width="2" opacity="0.15" stroke-linecap="round"/>
+            </svg>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">No recipes found. Try a different search or category.</MudText>
+        </MudPaper>
     }
 </MudContainer>
 
